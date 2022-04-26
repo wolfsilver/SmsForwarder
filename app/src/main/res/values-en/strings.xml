@@ -215,7 +215,7 @@
     <string name="isIgnored2">Can not directly operate the system power saving optimization Settings</string>
     <!--Other-->
     <string name="version_now">v1.0</string>
-    <string name="linkweb">https://github.com/pppscn/SmsForwarder</string>
+    <string name="linkweb">https://github.com/wolfsilver/SmsForwarder</string>
     <string name="linkweb2">https://gitee.com/pp/SmsForwarder</string>
     <string name="cache_size">0KB</string>
     <string name="sim1" tools:ignore="Typos">SIM1</string>
@@ -406,7 +406,7 @@
     <string name="bark_badge">Badge</string>
     <string name="bark_badge_tips">optional, e.g. 888</string>
     <string name="bark_url">Url</string>
-    <string name="bark_url_tips">optional, e.g. https://github.com/pppscn/SmsForwarder</string>
+    <string name="bark_url_tips">optional, e.g. https://github.com/wolfsilver/SmsForwarder</string>
     <string name="bark_level">Level</string>
     <string name="bark_level_active">active</string>
     <string name="bark_level_timeSensitive">timeSensitive</string>

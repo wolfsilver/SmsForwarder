@@ -215,7 +215,7 @@
     <string name="isIgnored2">本界面无法直接操作系统的省电优化设置</string>
     <!--Other-->
     <string name="version_now">v1.0</string>
-    <string name="linkweb">https://github.com/pppscn/SmsForwarder</string>
+    <string name="linkweb">https://github.com/wolfsilver/SmsForwarder</string>
     <string name="linkweb2">https://gitee.com/pp/SmsForwarder</string>
     <string name="cache_size">0KB</string>
     <string name="sim1" tools:ignore="Typos">SIM1</string>
@@ -405,7 +405,7 @@
     <string name="bark_badge">消息角标</string>
     <string name="bark_badge_tips">可选，例：888</string>
     <string name="bark_url">消息链接</string>
-    <string name="bark_url_tips">可选，例：https://github.com/pppscn/SmsForwarder</string>
+    <string name="bark_url_tips">可选，例：https://github.com/wolfsilver/SmsForwarder</string>
     <string name="bark_level">通知级别</string>
     <string name="bark_level_active">立即亮屏</string>
     <string name="bark_level_timeSensitive">时效性</string>

@@ -73,7 +73,7 @@ public class SenderFeishuMsg extends SenderBaseMsg {
             "    {\n" +
             "      \"elements\": [\n" +
             "        {\n" +
-            "          \"content\": \"[SmsForwarder](https://github.com/pppscn/SmsForwarder)\",\n" +
+            "          \"content\": \"[SmsForwarder](https://github.com/wolfsilver/SmsForwarder)\",\n" +
             "          \"tag\": \"lark_md\"\n" +
             "        }\n" +
             "      ],\n" +
