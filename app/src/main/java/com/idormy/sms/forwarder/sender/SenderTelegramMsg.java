@@ -44,7 +44,8 @@ public class SenderTelegramMsg extends SenderBaseMsg {
         }
 
         //特殊处理避免标题重复
-        final String finalText = text.replaceAll("#", "井").trim();
+        // final String finalText = text.replaceAll("#", "井").trim();
+        final String finalText = text.replaceAll("[-.+?^$[\](){}\\]", "\\$&").trim();
 
         if (!apiToken.startsWith("http")) {
             apiToken = "https://api.telegram.org/bot" + apiToken + "/sendMessage";
@@ -96,7 +97,7 @@ public class SenderTelegramMsg extends SenderBaseMsg {
             Map bodyMap = new HashMap();
             bodyMap.put("chat_id", chatId);
             bodyMap.put("text", finalText);
-            bodyMap.put("parse_mode", "HTML");
+            bodyMap.put("parse_mode", "MarkdownV2");
 
             String requestMsg = JSON.toJSONString(bodyMap);
             Log.i(TAG, "requestMsg:" + requestMsg);
