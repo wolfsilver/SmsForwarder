@@ -44,8 +44,9 @@ public class SenderTelegramMsg extends SenderBaseMsg {
         }
 
         //特殊处理避免标题重复
+        final String finalText = text.trim();
         // final String finalText = text.replaceAll("#", "井").trim();
-        final String finalText = text.replaceAll("[-.+?^$[\](){}\\]", "\\$&").trim();
+        // final String finalText = text.replaceAll("[-.+?^$[\](){}\\]", "\\$&").trim();
 
         if (!apiToken.startsWith("http")) {
             apiToken = "https://api.telegram.org/bot" + apiToken + "/sendMessage";
