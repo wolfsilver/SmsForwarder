@@ -81,7 +81,7 @@ android {
         // Assigns a different version code for each output APK.
         variant.outputs.each {
             output ->
-                def date = new Date().format("yyyyMMdd", TimeZone.getTimeZone("GMT+08"))
+                def date = new Date().format("yyyyMMdd-hhmmss", TimeZone.getTimeZone("GMT+08"))
                 def abiName = output.getFilter(com.android.build.OutputFile.ABI)
                 if (abiName == null) abiName = "universal"
                 output.versionCodeOverride = abiCodes.get(abiName, 0) * 100000 + variant.versionCode
