@@ -44,8 +44,9 @@ public class SenderTelegramMsg extends SenderBaseMsg {
         }
 
         //特殊处理避免标题重复
-        final String finalText = text.trim();
+        // final String finalText = text.trim();
         // final String finalText = text.replaceAll("#", "井").trim();
+        final String finalText = text.replaceAll("<", "&lt;").replaceAll(">", "&gt;").trim();
         // final String finalText = text.replaceAll("[-.+?^$[\](){}\\]", "\\$&").trim();
 
         if (!apiToken.startsWith("http")) {
@@ -98,7 +99,7 @@ public class SenderTelegramMsg extends SenderBaseMsg {
             Map bodyMap = new HashMap();
             bodyMap.put("chat_id", chatId);
             bodyMap.put("text", finalText);
-            bodyMap.put("parse_mode", "MarkdownV2");
+            bodyMap.put("parse_mode", "HTML");
 
             String requestMsg = JSON.toJSONString(bodyMap);
             Log.i(TAG, "requestMsg:" + requestMsg);

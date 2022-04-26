@@ -5,6 +5,8 @@ on:
   push:
     tags:
       - v*
+    branches:    
+      - 'telegram'
   pull_request:
     tags:
       - v*
