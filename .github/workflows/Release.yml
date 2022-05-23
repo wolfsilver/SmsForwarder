@@ -41,6 +41,9 @@ jobs:
       # 打包release
       - name: Build with Gradle
         run: bash ./gradlew assembleRelease
+      # 获取short sha
+      - name: Add SHORT_SHA env property with commit short sha
+      run: echo "SHORT_SHA=`git rev-parse --short HEAD`" >> $GITHUB_ENV
       # 创建release
       - name: Create Release
         id: create_release
@@ -55,8 +58,8 @@ jobs:
           #令牌的权限仅限于包含您的工作流程的仓库。 更多信息请参阅“GITHUB_TOKEN 的权限”。
           #在每个作业开始之前， GitHub 将为作业提取安装访问令牌。 令牌在作业完成后过期。
         with:
-          tag_name: ${{ github.ref }}
-          release_name: SmsForwarder ${{ github.ref }}
+          tag_name: ${{ github.ref }}.${SHORT_SHA}
+          release_name: SmsForwarder ${{ github.ref }}.${SHORT_SHA}
           draft: false
           prerelease: false
       # 存档打包的文件
