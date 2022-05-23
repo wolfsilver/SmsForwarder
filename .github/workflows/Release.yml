@@ -43,7 +43,7 @@ jobs:
         run: bash ./gradlew assembleRelease
       # 获取short sha
       - name: Add SHORT_SHA env property with commit short sha
-      run: echo "SHORT_SHA=`git rev-parse --short HEAD`" >> $GITHUB_ENV
+        run: echo "SHORT_SHA=`git rev-parse --short HEAD`" >> $GITHUB_ENV
       # 创建release
       - name: Create Release
         id: create_release
