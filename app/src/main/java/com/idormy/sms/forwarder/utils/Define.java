@@ -30,8 +30,6 @@ public class Define {
     public static final String SP_MSG_KEY_STRING_BATTERY_LEVEL_ONCE = "tsms_msg_key_string_battery_level_once";
     public static final String SP_MSG_KEY_STRING_RETRY_TIMES = "tsms_msg_key_retry_times";
     public static final String SP_MSG_KEY_STRING_DELAY_TIME = "tsms_msg_key_delay_time";
-    public static final String SP_MSG_KEY_STRING_ENABLE_SMSHUB_API = "tsms_msg_key_string_enable_smshub_api";
-    public static final String SP_MSG_KEY_STRING_SMSHUB_API_URL = "tsms_msg_key_string_smshub_api_url";
     public static final String SP_MSG_KEY_STRING_ENABLE_HTTP_SERVER = "tsms_msg_key_string_enable_http_server";
     public static final String SP_MSG_KEY_STRING_ENABLE_CALL_TYPE_1 = "tsms_msg_key_string_enable_call_type_1";
     public static final String SP_MSG_KEY_STRING_ENABLE_CALL_TYPE_2 = "tsms_msg_key_string_enable_call_type_2";
@@ -44,4 +42,8 @@ public class Define {
     public static final int REQUEST_TIMEOUT_SECONDS = 5;
     //HttpServer 服务端口
     public static final int HTTP_SERVER_PORT = 5000;
+
+    //FRPC相关
+    public static final String EVENT_UPDATE_CONFIG = "EVENT_UPDATE_CONFIG";
+    public static final String EVENT_RUNNING_ERROR = "EVENT_RUNNING_ERROR";
 }

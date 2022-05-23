@@ -7,23 +7,20 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
 import com.hjq.toast.ToastUtils;
 import com.idormy.sms.forwarder.receiver.RebootBroadcastReceiver;
-import com.idormy.sms.forwarder.utils.CacheUtil;
-import com.idormy.sms.forwarder.utils.CommonUtil;
-import com.idormy.sms.forwarder.utils.SettingUtil;
+import com.idormy.sms.forwarder.utils.CacheUtils;
+import com.idormy.sms.forwarder.utils.CommonUtils;
+import com.idormy.sms.forwarder.utils.SettingUtils;
 import com.xuexiang.xupdate.easy.EasyUpdate;
 import com.xuexiang.xupdate.proxy.impl.DefaultUpdateChecker;
 
 import java.util.List;
 
-
-public class AboutActivity extends AppCompatActivity {
+public class AboutActivity extends BaseActivity {
 
     private final String TAG = "AboutActivity";
 
@@ -49,7 +46,7 @@ public class AboutActivity extends AppCompatActivity {
                         } else {
                             ToastUtils.show(R.string.toast_granted_part);
                         }
-                        SettingUtil.switchEnableSms(true);
+                        SettingUtils.switchEnableSms(true);
                     }
 
                     @Override
@@ -61,14 +58,14 @@ public class AboutActivity extends AppCompatActivity {
                         } else {
                             ToastUtils.show(R.string.toast_denied);
                         }
-                        SettingUtil.switchEnableSms(false);
+                        SettingUtils.switchEnableSms(false);
                     }
                 });
 
         final TextView version_now = findViewById(R.id.version_now);
         Button check_version_now = findViewById(R.id.check_version_now);
         try {
-            version_now.setText(CommonUtil.getVersionName(AboutActivity.this));
+            version_now.setText(CommonUtils.getVersionName(AboutActivity.this));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,7 +73,7 @@ public class AboutActivity extends AppCompatActivity {
         check_version_now.setOnClickListener(v -> {
             try {
                 String updateUrl = "https://xupdate.bms.ink/update/checkVersion?appKey=com.idormy.sms.forwarder&versionCode=";
-                updateUrl += CommonUtil.getVersionCode(AboutActivity.this);
+                updateUrl += CommonUtils.getVersionCode(AboutActivity.this);
                 Log.d(TAG, updateUrl);
 
                 EasyUpdate.create(AboutActivity.this, updateUrl)
@@ -103,15 +100,15 @@ public class AboutActivity extends AppCompatActivity {
 
         final TextView cache_size = findViewById(R.id.cache_size);
         try {
-            cache_size.setText(CacheUtil.getTotalCacheSize(AboutActivity.this));
+            cache_size.setText(CacheUtils.getTotalCacheSize(AboutActivity.this));
         } catch (Exception e) {
             e.printStackTrace();
         }
         Button clear_all_cache = findViewById(R.id.clear_all_cache);
         clear_all_cache.setOnClickListener(v -> {
-            CacheUtil.clearAllCache(AboutActivity.this);
+            CacheUtils.clearAllCache(AboutActivity.this);
             try {
-                cache_size.setText(CacheUtil.getTotalCacheSize(AboutActivity.this));
+                cache_size.setText(CacheUtils.getTotalCacheSize(AboutActivity.this));
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -17,8 +17,6 @@ import static com.idormy.sms.forwarder.model.SenderModel.TYPE_WEB_NOTIFY;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -29,8 +27,6 @@ import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -45,7 +41,6 @@ import android.widget.Spinner;
 import android.widget.Switch;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.alibaba.fastjson.JSON;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -81,13 +76,12 @@ import com.idormy.sms.forwarder.sender.SenderSmsMsg;
 import com.idormy.sms.forwarder.sender.SenderTelegramMsg;
 import com.idormy.sms.forwarder.sender.SenderUtil;
 import com.idormy.sms.forwarder.sender.SenderWebNotifyMsg;
-import com.idormy.sms.forwarder.utils.CommonUtil;
-import com.idormy.sms.forwarder.utils.LogUtil;
-import com.idormy.sms.forwarder.utils.RuleUtil;
+import com.idormy.sms.forwarder.utils.CommonUtils;
+import com.idormy.sms.forwarder.utils.LogUtils;
+import com.idormy.sms.forwarder.utils.RuleUtils;
 import com.idormy.sms.forwarder.view.ClearEditText;
 import com.idormy.sms.forwarder.view.StepBar;
 
-import java.lang.reflect.Method;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Date;
@@ -96,7 +90,7 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("deprecation")
-public class SenderActivity extends AppCompatActivity {
+public class SenderActivity extends BaseActivity {
 
     public static final int NOTIFY = 0x9731993;
     private final String TAG = "SenderActivity";
@@ -120,8 +114,8 @@ public class SenderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sender);
 
-        LogUtil.init(this);
-        RuleUtil.init(this);
+        LogUtils.init(this);
+        RuleUtils.init(this);
         SenderUtil.init(this);
     }
 
@@ -265,7 +259,7 @@ public class SenderActivity extends AppCompatActivity {
 
         //计算浮动按钮位置
         FloatingActionButton btnFloat = findViewById(R.id.btnAddSender);
-        CommonUtil.calcMarginBottom(this, btnFloat, listView, null);
+        CommonUtils.calcMarginBottom(this, btnFloat, listView, null);
 
         //添加发送通道
         btnFloat.setOnClickListener(v -> {
@@ -462,7 +456,7 @@ public class SenderActivity extends AppCompatActivity {
                 ToastUtils.delayedShow(R.string.invalid_name, 3000);
                 return;
             }
-            if (CommonUtil.checkUrl(token, true)) {
+            if (CommonUtils.checkUrl(token, true)) {
                 ToastUtils.delayedShow(R.string.invalid_token, 3000);
                 return;
             }
@@ -500,7 +494,7 @@ public class SenderActivity extends AppCompatActivity {
 
         buttonTest.setOnClickListener(view -> {
             String token = editTextDingdingToken.getText().trim();
-            if (CommonUtil.checkUrl(token, true)) {
+            if (CommonUtils.checkUrl(token, true)) {
                 ToastUtils.delayedShow(R.string.invalid_token, 3000);
                 return;
             }
@@ -715,28 +709,28 @@ public class SenderActivity extends AppCompatActivity {
         buttonInsertSender.setOnClickListener(view -> {
             editTextEmailTitle.setFocusable(true);
             editTextEmailTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextEmailTitle, getString(R.string.tag_from));
+            CommonUtils.insertOrReplaceText2Cursor(editTextEmailTitle, getString(R.string.tag_from));
         });
 
         Button buttonInsertExtra = view1.findViewById(R.id.bt_insert_extra);
         buttonInsertExtra.setOnClickListener(view -> {
             editTextEmailTitle.setFocusable(true);
             editTextEmailTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextEmailTitle, getString(R.string.tag_card_slot));
+            CommonUtils.insertOrReplaceText2Cursor(editTextEmailTitle, getString(R.string.tag_card_slot));
         });
 
         Button buttonInsertTime = view1.findViewById(R.id.bt_insert_time);
         buttonInsertTime.setOnClickListener(view -> {
             editTextEmailTitle.setFocusable(true);
             editTextEmailTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextEmailTitle, getString(R.string.tag_receive_time));
+            CommonUtils.insertOrReplaceText2Cursor(editTextEmailTitle, getString(R.string.tag_receive_time));
         });
 
         Button buttonInsertDeviceName = view1.findViewById(R.id.bt_insert_device_name);
         buttonInsertDeviceName.setOnClickListener(view -> {
             editTextEmailTitle.setFocusable(true);
             editTextEmailTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextEmailTitle, getString(R.string.tag_device_name));
+            CommonUtils.insertOrReplaceText2Cursor(editTextEmailTitle, getString(R.string.tag_device_name));
         });
 
     }
@@ -800,7 +794,7 @@ public class SenderActivity extends AppCompatActivity {
 
             //推送地址
             String barkServer = editTextBarkServer.getText().trim();
-            if (!CommonUtil.checkUrl(barkServer, false)) {
+            if (!CommonUtils.checkUrl(barkServer, false)) {
                 ToastUtils.delayedShow(R.string.invalid_bark_server, 3000);
                 return;
             }
@@ -851,7 +845,7 @@ public class SenderActivity extends AppCompatActivity {
             String badge = editTextBarkBadge.getText().toString().trim(); //角标
             String url = editTextBarkUrl.getText().toString().trim(); //链接
             BarkSettingVo barkSettingVoNew = new BarkSettingVo(barkServer, icon, title, levelId, sound, badge, url);
-            if (CommonUtil.checkUrl(barkServer, false)) {
+            if (CommonUtils.checkUrl(barkServer, false)) {
                 try {
                     SmsVo smsVo = new SmsVo(getString(R.string.test_phone_num), getString(R.string.test_sender_sms), new Date(), getString(R.string.test_sim_info));
                     SenderBarkMsg.sendMsg(0, handler, null, barkSettingVoNew, smsVo.getTitleForSend(title), smsVo.getSmsVoForSend(), getString(R.string.test_group_name));
@@ -869,28 +863,28 @@ public class SenderActivity extends AppCompatActivity {
         buttonInsertSender.setOnClickListener(view -> {
             editTextBarkTitle.setFocusable(true);
             editTextBarkTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextBarkTitle, getString(R.string.tag_from));
+            CommonUtils.insertOrReplaceText2Cursor(editTextBarkTitle, getString(R.string.tag_from));
         });
 
         Button buttonInsertExtra = view1.findViewById(R.id.bt_insert_extra);
         buttonInsertExtra.setOnClickListener(view -> {
             editTextBarkTitle.setFocusable(true);
             editTextBarkTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextBarkTitle, getString(R.string.tag_card_slot));
+            CommonUtils.insertOrReplaceText2Cursor(editTextBarkTitle, getString(R.string.tag_card_slot));
         });
 
         Button buttonInsertTime = view1.findViewById(R.id.bt_insert_time);
         buttonInsertTime.setOnClickListener(view -> {
             editTextBarkTitle.setFocusable(true);
             editTextBarkTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextBarkTitle, getString(R.string.tag_receive_time));
+            CommonUtils.insertOrReplaceText2Cursor(editTextBarkTitle, getString(R.string.tag_receive_time));
         });
 
         Button buttonInsertDeviceName = view1.findViewById(R.id.bt_insert_device_name);
         buttonInsertDeviceName.setOnClickListener(view -> {
             editTextBarkTitle.setFocusable(true);
             editTextBarkTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextBarkTitle, getString(R.string.tag_device_name));
+            CommonUtils.insertOrReplaceText2Cursor(editTextBarkTitle, getString(R.string.tag_device_name));
         });
 
     }
@@ -983,8 +977,11 @@ public class SenderActivity extends AppCompatActivity {
             editTextWebNotifySecret.setText(webNotifySettingVo.getSecret());
             radioGroupWebNotifyMethod.check(webNotifySettingVo.getWebNotifyMethodCheckId());
             //set header
-            for (Map.Entry<String, String> header : webNotifySettingVo.getHeaders().entrySet()) {
-                addHeaderItemLinearLayout(headerItemMap, linearLayoutWebNotifyHeaders, header.getKey(), header.getValue());
+            Map<String, String> headers = webNotifySettingVo.getHeaders();
+            if (headers != null) {
+                for (Map.Entry<String, String> header : headers.entrySet()) {
+                    addHeaderItemLinearLayout(headerItemMap, linearLayoutWebNotifyHeaders, header.getKey(), header.getValue());
+                }
             }
         }
 
@@ -1016,7 +1013,7 @@ public class SenderActivity extends AppCompatActivity {
             String webParams = editTextWebNotifyWebParams.getText().toString().trim();
             Map<String, String> headers = getHeadersFromHeaderItemMap(headerItemMap);
 
-            if (!CommonUtil.checkUrl(webServer, false)) {
+            if (!CommonUtils.checkUrl(webServer, false)) {
                 ToastUtils.delayedShow(R.string.invalid_webserver, 3000);
                 return;
             }
@@ -1057,7 +1054,7 @@ public class SenderActivity extends AppCompatActivity {
             String webParams = editTextWebNotifyWebParams.getText().toString().trim();
             Map<String, String> headers = getHeadersFromHeaderItemMap(headerItemMap);
 
-            if (!CommonUtil.checkUrl(webServer, false)) {
+            if (!CommonUtils.checkUrl(webServer, false)) {
                 ToastUtils.delayedShow(R.string.invalid_webserver, 3000);
                 return;
             }
@@ -1119,7 +1116,7 @@ public class SenderActivity extends AppCompatActivity {
             }
 
             String webHook = editTextQYWXGroupRobotWebHook.getText().trim();
-            if (!CommonUtil.checkUrl(webHook, false)) {
+            if (!CommonUtils.checkUrl(webHook, false)) {
                 ToastUtils.delayedShow(R.string.invalid_webhook, 3000);
                 return;
             }
@@ -1157,7 +1154,7 @@ public class SenderActivity extends AppCompatActivity {
 
         buttonTest.setOnClickListener(view -> {
             String webHook = editTextQYWXGroupRobotWebHook.getText().trim();
-            if (!CommonUtil.checkUrl(webHook, false)) {
+            if (!CommonUtils.checkUrl(webHook, false)) {
                 ToastUtils.delayedShow(R.string.invalid_webhook, 3000);
                 return;
             }
@@ -1815,7 +1812,7 @@ public class SenderActivity extends AppCompatActivity {
             String secret = editTextFeishuSecret.getText().trim();
             String msgType = radioGroupFeishuMsgType.getCheckedRadioButtonId() == R.id.radioFeishuMsgTypeText ? "text" : "interactive";
             String titleTemplate = editTextFeishuTitle.getText().toString().trim();
-            if (!CommonUtil.checkUrl(webHook, false)) {
+            if (!CommonUtils.checkUrl(webHook, false)) {
                 ToastUtils.delayedShow(R.string.invalid_webhook, 3000);
                 return;
             }
@@ -1858,7 +1855,7 @@ public class SenderActivity extends AppCompatActivity {
             String secret = editTextFeishuSecret.getText().trim();
             String msgType = radioGroupFeishuMsgType.getCheckedRadioButtonId() == R.id.radioFeishuMsgTypeText ? "text" : "interactive";
             String titleTemplate = editTextFeishuTitle.getText().toString().trim();
-            if (!CommonUtil.checkUrl(webHook, false)) {
+            if (!CommonUtils.checkUrl(webHook, false)) {
                 ToastUtils.delayedShow(R.string.invalid_webhook, 3000);
                 return;
             }
@@ -1876,28 +1873,28 @@ public class SenderActivity extends AppCompatActivity {
         buttonInsertSender.setOnClickListener(view -> {
             editTextFeishuTitle.setFocusable(true);
             editTextFeishuTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextFeishuTitle, getString(R.string.tag_from));
+            CommonUtils.insertOrReplaceText2Cursor(editTextFeishuTitle, getString(R.string.tag_from));
         });
 
         Button buttonInsertExtra = view1.findViewById(R.id.bt_insert_extra);
         buttonInsertExtra.setOnClickListener(view -> {
             editTextFeishuTitle.setFocusable(true);
             editTextFeishuTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextFeishuTitle, getString(R.string.tag_card_slot));
+            CommonUtils.insertOrReplaceText2Cursor(editTextFeishuTitle, getString(R.string.tag_card_slot));
         });
 
         Button buttonInsertTime = view1.findViewById(R.id.bt_insert_time);
         buttonInsertTime.setOnClickListener(view -> {
             editTextFeishuTitle.setFocusable(true);
             editTextFeishuTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextFeishuTitle, getString(R.string.tag_receive_time));
+            CommonUtils.insertOrReplaceText2Cursor(editTextFeishuTitle, getString(R.string.tag_receive_time));
         });
 
         Button buttonInsertDeviceName = view1.findViewById(R.id.bt_insert_device_name);
         buttonInsertDeviceName.setOnClickListener(view -> {
             editTextFeishuTitle.setFocusable(true);
             editTextFeishuTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextFeishuTitle, getString(R.string.tag_device_name));
+            CommonUtils.insertOrReplaceText2Cursor(editTextFeishuTitle, getString(R.string.tag_device_name));
         });
     }
 
@@ -2040,28 +2037,28 @@ public class SenderActivity extends AppCompatActivity {
         buttonInsertSender.setOnClickListener(view -> {
             editTextPushPlusTitle.setFocusable(true);
             editTextPushPlusTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextPushPlusTitle, getString(R.string.tag_from));
+            CommonUtils.insertOrReplaceText2Cursor(editTextPushPlusTitle, getString(R.string.tag_from));
         });
 
         Button buttonInsertExtra = view1.findViewById(R.id.bt_insert_extra);
         buttonInsertExtra.setOnClickListener(view -> {
             editTextPushPlusTitle.setFocusable(true);
             editTextPushPlusTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextPushPlusTitle, getString(R.string.tag_card_slot));
+            CommonUtils.insertOrReplaceText2Cursor(editTextPushPlusTitle, getString(R.string.tag_card_slot));
         });
 
         Button buttonInsertTime = view1.findViewById(R.id.bt_insert_time);
         buttonInsertTime.setOnClickListener(view -> {
             editTextPushPlusTitle.setFocusable(true);
             editTextPushPlusTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextPushPlusTitle, getString(R.string.tag_receive_time));
+            CommonUtils.insertOrReplaceText2Cursor(editTextPushPlusTitle, getString(R.string.tag_receive_time));
         });
 
         Button buttonInsertDeviceName = view1.findViewById(R.id.bt_insert_device_name);
         buttonInsertDeviceName.setOnClickListener(view -> {
             editTextPushPlusTitle.setFocusable(true);
             editTextPushPlusTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextPushPlusTitle, getString(R.string.tag_device_name));
+            CommonUtils.insertOrReplaceText2Cursor(editTextPushPlusTitle, getString(R.string.tag_device_name));
         });
     }
 
@@ -2116,7 +2113,7 @@ public class SenderActivity extends AppCompatActivity {
             }
 
             String webServer = editTextGotifyWebServer.getText().trim();
-            if (!CommonUtil.checkUrl(webServer, false)) {
+            if (!CommonUtils.checkUrl(webServer, false)) {
                 ToastUtils.delayedShow(R.string.invalid_webserver, 3000);
                 return;
             }
@@ -2160,7 +2157,7 @@ public class SenderActivity extends AppCompatActivity {
 
         buttonTest.setOnClickListener(view -> {
             String webServer = editTextGotifyWebServer.getText().trim();
-            if (!CommonUtil.checkUrl(webServer, false)) {
+            if (!CommonUtils.checkUrl(webServer, false)) {
                 ToastUtils.delayedShow(R.string.invalid_webserver, 3000);
                 return;
             }
@@ -2186,84 +2183,30 @@ public class SenderActivity extends AppCompatActivity {
         buttonInsertSender.setOnClickListener(view -> {
             editTextGotifyTitle.setFocusable(true);
             editTextGotifyTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextGotifyTitle, getString(R.string.tag_from));
+            CommonUtils.insertOrReplaceText2Cursor(editTextGotifyTitle, getString(R.string.tag_from));
         });
 
         Button buttonInsertExtra = view1.findViewById(R.id.bt_insert_extra);
         buttonInsertExtra.setOnClickListener(view -> {
             editTextGotifyTitle.setFocusable(true);
             editTextGotifyTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextGotifyTitle, getString(R.string.tag_card_slot));
+            CommonUtils.insertOrReplaceText2Cursor(editTextGotifyTitle, getString(R.string.tag_card_slot));
         });
 
         Button buttonInsertTime = view1.findViewById(R.id.bt_insert_time);
         buttonInsertTime.setOnClickListener(view -> {
             editTextGotifyTitle.setFocusable(true);
             editTextGotifyTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextGotifyTitle, getString(R.string.tag_receive_time));
+            CommonUtils.insertOrReplaceText2Cursor(editTextGotifyTitle, getString(R.string.tag_receive_time));
         });
 
         Button buttonInsertDeviceName = view1.findViewById(R.id.bt_insert_device_name);
         buttonInsertDeviceName.setOnClickListener(view -> {
             editTextGotifyTitle.setFocusable(true);
             editTextGotifyTitle.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(editTextGotifyTitle, getString(R.string.tag_device_name));
+            CommonUtils.insertOrReplaceText2Cursor(editTextGotifyTitle, getString(R.string.tag_device_name));
         });
 
-    }
-
-    //启用menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    //menu点击事件
-    @SuppressLint("NonConstantResourceId")
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-        switch (item.getItemId()) {
-            case R.id.to_app_list:
-                intent = new Intent(this, AppListActivity.class);
-                break;
-            case R.id.to_clone:
-                intent = new Intent(this, CloneActivity.class);
-                break;
-            case R.id.to_about:
-                intent = new Intent(this, AboutActivity.class);
-                break;
-            case R.id.to_help:
-                Uri uri = Uri.parse("https://gitee.com/pp/SmsForwarder/wikis/pages");
-                intent = new Intent(Intent.ACTION_VIEW, uri);
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-        startActivity(intent);
-        return true;
-    }
-
-    //设置menu图标显示
-    @Override
-    public boolean onMenuOpened(int featureId, Menu menu) {
-        Log.d(TAG, "onMenuOpened, featureId=" + featureId);
-        if (menu != null) {
-            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
-                try {
-                    Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
-                    m.setAccessible(true);
-                    m.invoke(menu, true);
-                } catch (NoSuchMethodException e) {
-                    Log.e(TAG, "onMenuOpened", e);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return super.onMenuOpened(featureId, menu);
     }
 
 }

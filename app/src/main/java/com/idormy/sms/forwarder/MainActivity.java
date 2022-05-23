@@ -12,8 +12,6 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,7 +21,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hjq.permissions.OnPermissionCallback;
@@ -36,31 +33,30 @@ import com.idormy.sms.forwarder.sender.BatteryReportCronTask;
 import com.idormy.sms.forwarder.sender.HttpServer;
 import com.idormy.sms.forwarder.sender.SendUtil;
 import com.idormy.sms.forwarder.sender.SenderUtil;
-import com.idormy.sms.forwarder.sender.SmsHubApiTask;
 import com.idormy.sms.forwarder.service.BatteryService;
 import com.idormy.sms.forwarder.service.FrontService;
 import com.idormy.sms.forwarder.service.MusicService;
-import com.idormy.sms.forwarder.utils.CommonUtil;
-import com.idormy.sms.forwarder.utils.HttpUtil;
+import com.idormy.sms.forwarder.utils.CommonUtils;
+import com.idormy.sms.forwarder.utils.HttpUtils;
 import com.idormy.sms.forwarder.utils.KeepAliveUtils;
-import com.idormy.sms.forwarder.utils.LogUtil;
-import com.idormy.sms.forwarder.utils.NetUtil;
+import com.idormy.sms.forwarder.utils.LogUtils;
+import com.idormy.sms.forwarder.utils.NetUtils;
 import com.idormy.sms.forwarder.utils.OnePixelManager;
 import com.idormy.sms.forwarder.utils.PhoneUtils;
-import com.idormy.sms.forwarder.utils.RuleUtil;
-import com.idormy.sms.forwarder.utils.SettingUtil;
+import com.idormy.sms.forwarder.utils.RuleUtils;
+import com.idormy.sms.forwarder.utils.SettingUtils;
 import com.idormy.sms.forwarder.utils.SharedPreferencesHelper;
-import com.idormy.sms.forwarder.utils.SmsUtil;
-import com.idormy.sms.forwarder.utils.TimeUtil;
+import com.idormy.sms.forwarder.utils.SmsUtils;
+import com.idormy.sms.forwarder.utils.TimeUtils;
+import com.idormy.sms.forwarder.utils.UmInitConfig;
+import com.idormy.sms.forwarder.view.RefreshListView;
 import com.idormy.sms.forwarder.view.StepBar;
 import com.umeng.commonsdk.UMConfigure;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("CommentedOutCode")
-public class MainActivity extends AppCompatActivity implements RefreshListView.IRefreshListener {
+public class MainActivity extends BaseActivity implements RefreshListView.IRefreshListener {
 
     private final String TAG = "MainActivity";
     // logVoList用于存储数据
@@ -82,11 +78,11 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
         if (!MyApplication.allowPrivacyPolicy) return;
 
         //短信&网络组件初始化
-        SmsUtil.init(this);
-        NetUtil.init(this);
+        SmsUtils.init(this);
+        NetUtils.init(this);
 
-        LogUtil.init(this);
-        RuleUtil.init(this);
+        LogUtils.init(this);
+        RuleUtils.init(this);
         SenderUtil.init(this);
 
         //前台服务
@@ -108,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
         }
 
         //后台播放无声音乐
-        if (SettingUtil.getPlaySilenceMusic()) {
+        if (SettingUtils.getPlaySilenceMusic()) {
             try {
                 Intent musicServiceIntent = new Intent(this, MusicService.class);
                 musicServiceIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -119,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
         }
 
         //1像素透明Activity保活 or 仅锁屏状态转发APP通知
-        if (SettingUtil.getOnePixelActivity() || SettingUtil.getSwitchNotUserPresent()) {
+        if (SettingUtils.getOnePixelActivity() || SettingUtils.getSwitchNotUserPresent()) {
             try {
                 onePixelManager = new OnePixelManager();
                 onePixelManager.registerOnePixelReceiver(this);//注册广播接收者
@@ -128,9 +124,9 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
             }
         }
 
-        HttpUtil.init(this);
+        HttpUtils.init(this);
         //启用HttpServer
-        if (SettingUtil.getSwitchEnableHttpServer()) {
+        if (SettingUtils.getSwitchEnableHttpServer()) {
             HttpServer.init(this);
             try {
                 HttpServer.update();
@@ -139,18 +135,8 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
             }
         }
 
-        //启用SmsHubApiTask
-        if (SettingUtil.getSwitchEnableSmsHubApi()) {
-            SmsHubApiTask.init(this);
-            try {
-                SmsHubApiTask.updateTimer();
-            } catch (Exception e) {
-                Log.e(TAG, "SmsHubApiTask:", e);
-            }
-        }
-
         //电池状态定时推送
-        if (SettingUtil.getSwitchEnableBatteryCron()) {
+        if (SettingUtils.getSwitchEnableBatteryCron()) {
             try {
                 BatteryReportCronTask.getSingleton().updateTimer();
             } catch (Exception e) {
@@ -173,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
 
         //检查权限是否获取
         PackageManager pm = getPackageManager();
-        CommonUtil.CheckPermission(pm, this);
+        CommonUtils.CheckPermission(pm, this);
         XXPermissions.with(this)
                 // 接收短信
                 .permission(Permission.RECEIVE_SMS)
@@ -208,12 +194,12 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
                                 ToastUtils.show(R.string.toast_granted_part);
                             }
                         }
-                        SettingUtil.switchEnableSms(true);
+                        SettingUtils.switchEnableSms(true);
 
                         //首次使用重要提醒
                         final SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(MainActivity.this, "umeng");
                         boolean firstTime = sharedPreferencesHelper.getSharedPreference("firstTime", "true").equals("true");
-                        if (firstTime && LogUtil.countLog("2", null, null) == 0) {
+                        if (firstTime && LogUtils.countLog("2", null, null) == 0) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
                                     .setIcon(R.mipmap.ic_launcher)
                                     .setTitle("首次使用重要提醒")
@@ -242,14 +228,14 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
                                 ToastUtils.show(R.string.toast_denied);
                             }
                         }
-                        SettingUtil.switchEnableSms(false);
+                        SettingUtils.switchEnableSms(false);
                     }
                 });
 
         //计算浮动按钮位置
         FloatingActionButton btnFloat = findViewById(R.id.btnCleanLog);
         RefreshListView viewList = findViewById(R.id.list_view_log);
-        CommonUtil.calcMarginBottom(this, btnFloat, viewList, null);
+        CommonUtils.calcMarginBottom(this, btnFloat, viewList, null);
 
         //清空日志
         btnFloat.setOnClickListener(v -> {
@@ -257,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
             builder.setTitle(R.string.clear_logs_tips)
                     .setPositiveButton(R.string.confirm, (dialog, which) -> {
                         // TODO Auto-generated method stub
-                        LogUtil.delLog(null, null);
+                        LogUtils.delLog(null, null);
                         initTLogs();
                         adapter.add(logVos);
                     });
@@ -300,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
             builder.setPositiveButton(R.string.confirm, (dialog, which) -> {
                 Long id1 = logVos.get(position - 1).getId();
                 Log.d(TAG, "id = " + id1);
-                LogUtil.delLog(id1, null);
+                LogUtils.delLog(id1, null);
                 initTLogs(); //初始化数据
                 showList(logVos);
                 ToastUtils.show(R.string.delete_log_toast);
@@ -353,9 +339,9 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
             }
 
             //开启读取通知栏权限
-            if (SettingUtil.getSwitchEnableAppNotify() && !CommonUtil.isNotificationListenerServiceEnabled(this)) {
-                CommonUtil.toggleNotificationListenerService(this);
-                SettingUtil.switchEnableAppNotify(false);
+            if (SettingUtils.getSwitchEnableAppNotify() && !CommonUtils.isNotificationListenerServiceEnabled(this)) {
+                CommonUtils.toggleNotificationListenerService(this);
+                SettingUtils.switchEnableAppNotify(false);
                 ToastUtils.delayedShow(R.string.tips_notification_listener, 3000);
                 return;
             }
@@ -404,10 +390,10 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
         //是否同意隐私协议
         if (!MyApplication.allowPrivacyPolicy) return;
 
-        if (requestCode == CommonUtil.NOTIFICATION_REQUEST_CODE) {
-            if (CommonUtil.isNotificationListenerServiceEnabled(this)) {
+        if (requestCode == CommonUtils.NOTIFICATION_REQUEST_CODE) {
+            if (CommonUtils.isNotificationListenerServiceEnabled(this)) {
                 ToastUtils.show(R.string.notification_listener_service_enabled);
-                CommonUtil.toggleNotificationListenerService(this);
+                CommonUtils.toggleNotificationListenerService(this);
             } else {
                 ToastUtils.show(R.string.notification_listener_service_disabled);
             }
@@ -422,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
 
     // 初始化数据
     private void initTLogs() {
-        logVos = LogUtil.getLog(null, null, currentType);
+        logVos = LogUtils.getLog(null, null, currentType);
     }
 
     private void showList(List<LogVo> logVosN) {
@@ -457,15 +443,15 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
         builder.setTitle(R.string.details);
         String simInfo = logVo.getSimInfo();
         if (simInfo != null) {
-            builder.setMessage(getString(R.string.from) + logVo.getFrom() + "\n\n" + getString(R.string.msg) + logVo.getContent() + "\n\n" + getString(R.string.slot) + logVo.getSimInfo() + "\n\n" + getString(R.string.rule) + logVo.getRule() + "\n\n" + getString(R.string.time) + TimeUtil.utc2Local(logVo.getTime()) + getString(R.string.result) + logVo.getForwardResponse());
+            builder.setMessage(getString(R.string.from) + logVo.getFrom() + "\n\n" + getString(R.string.msg) + logVo.getContent() + "\n\n" + getString(R.string.slot) + logVo.getSimInfo() + "\n\n" + getString(R.string.rule) + logVo.getRule() + "\n\n" + getString(R.string.time) + TimeUtils.utc2Local(logVo.getTime()) + getString(R.string.result) + logVo.getForwardResponse());
         } else {
-            builder.setMessage(getString(R.string.from) + logVo.getFrom() + "\n\n" + getString(R.string.msg) + logVo.getContent() + "\n\n" + getString(R.string.rule) + logVo.getRule() + "\n\n" + getString(R.string.time) + TimeUtil.utc2Local(logVo.getTime()) + getString(R.string.result) + logVo.getForwardResponse());
+            builder.setMessage(getString(R.string.from) + logVo.getFrom() + "\n\n" + getString(R.string.msg) + logVo.getContent() + "\n\n" + getString(R.string.rule) + logVo.getRule() + "\n\n" + getString(R.string.time) + TimeUtils.utc2Local(logVo.getTime()) + getString(R.string.result) + logVo.getForwardResponse());
         }
         //删除
         builder.setNegativeButton(R.string.del, (dialog, which) -> {
             Long id = logVo.getId();
             Log.d(TAG, "id = " + id);
-            LogUtil.delLog(id, null);
+            LogUtils.delLog(id, null);
             initTLogs(); //初始化数据
             showList(logVos);
             ToastUtils.show(R.string.delete_log_toast);
@@ -498,61 +484,6 @@ public class MainActivity extends AppCompatActivity implements RefreshListView.I
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addCategory(Intent.CATEGORY_HOME);
         startActivity(intent);
-    }
-
-    //启用menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    //menu点击事件
-    @SuppressLint("NonConstantResourceId")
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-        switch (item.getItemId()) {
-            case R.id.to_app_list:
-                intent = new Intent(this, AppListActivity.class);
-                break;
-            case R.id.to_clone:
-                intent = new Intent(this, CloneActivity.class);
-                break;
-            case R.id.to_about:
-                intent = new Intent(this, AboutActivity.class);
-                break;
-            case R.id.to_help:
-                //Uri uri = Uri.parse("https://gitee.com/pp/SmsForwarder/wikis/pages");
-                //intent = new Intent(Intent.ACTION_VIEW, uri);
-                intent = new Intent(this, HelpActivity.class);
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-        startActivity(intent);
-        return true;
-    }
-
-    //设置menu图标显示
-    @Override
-    public boolean onMenuOpened(int featureId, Menu menu) {
-        Log.d(TAG, "onMenuOpened, featureId=" + featureId);
-        if (menu != null) {
-            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
-                try {
-                    Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
-                    m.setAccessible(true);
-                    m.invoke(menu, true);
-                } catch (NoSuchMethodException e) {
-                    Log.e(TAG, "onMenuOpened", e);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return super.onMenuOpened(featureId, menu);
     }
 
     /*** 隐私协议授权弹窗*/

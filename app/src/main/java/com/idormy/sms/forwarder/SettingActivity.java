@@ -17,8 +17,6 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -29,7 +27,6 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.hjq.permissions.OnPermissionCallback;
 import com.hjq.permissions.Permission;
@@ -39,21 +36,18 @@ import com.idormy.sms.forwarder.receiver.RebootBroadcastReceiver;
 import com.idormy.sms.forwarder.sender.BatteryReportCronTask;
 import com.idormy.sms.forwarder.sender.HttpServer;
 import com.idormy.sms.forwarder.sender.SenderUtil;
-import com.idormy.sms.forwarder.sender.SmsHubApiTask;
 import com.idormy.sms.forwarder.service.MusicService;
-import com.idormy.sms.forwarder.utils.CommonUtil;
+import com.idormy.sms.forwarder.utils.CommonUtils;
 import com.idormy.sms.forwarder.utils.DbHelper;
 import com.idormy.sms.forwarder.utils.Define;
-import com.idormy.sms.forwarder.utils.HttpUtil;
+import com.idormy.sms.forwarder.utils.HttpUtils;
 import com.idormy.sms.forwarder.utils.KeepAliveUtils;
-import com.idormy.sms.forwarder.utils.LogUtil;
+import com.idormy.sms.forwarder.utils.LogUtils;
 import com.idormy.sms.forwarder.utils.OnePixelManager;
-import com.idormy.sms.forwarder.utils.RuleUtil;
-import com.idormy.sms.forwarder.utils.SettingUtil;
-import com.idormy.sms.forwarder.view.ClearEditText;
+import com.idormy.sms.forwarder.utils.RuleUtils;
+import com.idormy.sms.forwarder.utils.SettingUtils;
 import com.idormy.sms.forwarder.view.StepBar;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -61,7 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingActivity extends BaseActivity {
     private final String TAG = "SettingActivity";
     private Context context;
     private boolean isIgnoreBatteryOptimization;
@@ -73,8 +67,8 @@ public class SettingActivity extends AppCompatActivity {
         context = SettingActivity.this;
         setContentView(R.layout.activity_setting);
 
-        LogUtil.init(this);
-        RuleUtil.init(this);
+        LogUtils.init(this);
+        RuleUtils.init(this);
         SenderUtil.init(this);
     }
 
@@ -86,7 +80,7 @@ public class SettingActivity extends AppCompatActivity {
 
         //是否关闭页面提示
         ScrollView scrollView = findViewById(R.id.scrollView);
-        CommonUtil.calcMarginBottom(this, null, null, scrollView);
+        CommonUtils.calcMarginBottom(this, null, null, scrollView);
 
         //转发短信广播
         switchEnableSms(findViewById(R.id.switch_enable_sms));
@@ -97,8 +91,6 @@ public class SettingActivity extends AppCompatActivity {
 
         //HttpServer
         switchEnableHttpServer(findViewById(R.id.switch_enable_http_server));
-        //SmsHubApiTask
-        editSmsHubConfig(findViewById(R.id.switch_enable_sms_hub), findViewById(R.id.editText_text_sms_hub_url));
 
         //监听电池状态变化
         switchBatteryReceiver(findViewById(R.id.switch_battery_receiver));
@@ -150,14 +142,14 @@ public class SettingActivity extends AppCompatActivity {
     //设置转发短信
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private void switchEnableSms(Switch switch_enable_sms) {
-        switch_enable_sms.setChecked(SettingUtil.getSwitchEnableSms());
+        switch_enable_sms.setChecked(SettingUtils.getSwitchEnableSms());
 
         switch_enable_sms.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Log.d(TAG, "switchEnableSms:" + isChecked);
             if (isChecked) {
                 //检查权限是否获取
                 PackageManager pm = getPackageManager();
-                CommonUtil.CheckPermission(pm, this);
+                CommonUtils.CheckPermission(pm, this);
                 XXPermissions.with(this)
                         // 接收短信
                         .permission(Permission.RECEIVE_SMS)
@@ -174,7 +166,7 @@ public class SettingActivity extends AppCompatActivity {
                                 } else {
                                     ToastUtils.show(R.string.toast_granted_part);
                                 }
-                                SettingUtil.switchEnableSms(true);
+                                SettingUtils.switchEnableSms(true);
                             }
 
                             @Override
@@ -186,11 +178,11 @@ public class SettingActivity extends AppCompatActivity {
                                 } else {
                                     ToastUtils.show(R.string.toast_denied);
                                 }
-                                SettingUtil.switchEnableSms(false);
+                                SettingUtils.switchEnableSms(false);
                             }
                         });
             } else {
-                SettingUtil.switchEnableSms(false);
+                SettingUtils.switchEnableSms(false);
             }
         });
     }
@@ -198,15 +190,15 @@ public class SettingActivity extends AppCompatActivity {
     //转发通话记录
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private void switchEnablePhone(Switch switch_enable_phone, CheckBox check_box_call_type_1, CheckBox check_box_call_type_2, CheckBox check_box_call_type_3) {
-        switch_enable_phone.setChecked(SettingUtil.getSwitchEnablePhone());
-        check_box_call_type_1.setChecked(SettingUtil.getSwitchCallType1());
-        check_box_call_type_2.setChecked(SettingUtil.getSwitchCallType2());
-        check_box_call_type_3.setChecked(SettingUtil.getSwitchCallType3());
+        switch_enable_phone.setChecked(SettingUtils.getSwitchEnablePhone());
+        check_box_call_type_1.setChecked(SettingUtils.getSwitchCallType1());
+        check_box_call_type_2.setChecked(SettingUtils.getSwitchCallType2());
+        check_box_call_type_3.setChecked(SettingUtils.getSwitchCallType3());
 
         switch_enable_phone.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked && !SettingUtil.getSwitchCallType1() && !SettingUtil.getSwitchCallType2() && !SettingUtil.getSwitchCallType3()) {
+            if (isChecked && !SettingUtils.getSwitchCallType1() && !SettingUtils.getSwitchCallType2() && !SettingUtils.getSwitchCallType3()) {
                 ToastUtils.show(R.string.enable_phone_fw_tips);
-                SettingUtil.switchEnablePhone(false);
+                SettingUtils.switchEnablePhone(false);
                 return;
             }
 
@@ -214,7 +206,7 @@ public class SettingActivity extends AppCompatActivity {
             if (isChecked) {
                 //检查权限是否获取
                 PackageManager pm = getPackageManager();
-                CommonUtil.CheckPermission(pm, this);
+                CommonUtils.CheckPermission(pm, this);
                 XXPermissions.with(this)
                         // 读取电话状态
                         .permission(Permission.READ_PHONE_STATE)
@@ -233,7 +225,7 @@ public class SettingActivity extends AppCompatActivity {
                                 } else {
                                     ToastUtils.show(R.string.toast_granted_part);
                                 }
-                                SettingUtil.switchEnablePhone(true);
+                                SettingUtils.switchEnablePhone(true);
                             }
 
                             @Override
@@ -245,35 +237,35 @@ public class SettingActivity extends AppCompatActivity {
                                 } else {
                                     ToastUtils.show(R.string.toast_denied);
                                 }
-                                SettingUtil.switchEnablePhone(false);
+                                SettingUtils.switchEnablePhone(false);
                             }
                         });
             } else {
-                SettingUtil.switchEnablePhone(false);
+                SettingUtils.switchEnablePhone(false);
             }
         });
 
         check_box_call_type_1.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SettingUtil.switchCallType1(isChecked);
-            if (!isChecked && !SettingUtil.getSwitchCallType1() && !SettingUtil.getSwitchCallType2() && !SettingUtil.getSwitchCallType3()) {
+            SettingUtils.switchCallType1(isChecked);
+            if (!isChecked && !SettingUtils.getSwitchCallType1() && !SettingUtils.getSwitchCallType2() && !SettingUtils.getSwitchCallType3()) {
                 ToastUtils.show(R.string.enable_phone_fw_tips);
-                SettingUtil.switchEnablePhone(false);
+                SettingUtils.switchEnablePhone(false);
             }
         });
 
         check_box_call_type_2.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SettingUtil.switchCallType2(isChecked);
-            if (!isChecked && !SettingUtil.getSwitchCallType1() && !SettingUtil.getSwitchCallType2() && !SettingUtil.getSwitchCallType3()) {
+            SettingUtils.switchCallType2(isChecked);
+            if (!isChecked && !SettingUtils.getSwitchCallType1() && !SettingUtils.getSwitchCallType2() && !SettingUtils.getSwitchCallType3()) {
                 ToastUtils.show(R.string.enable_phone_fw_tips);
-                SettingUtil.switchEnablePhone(false);
+                SettingUtils.switchEnablePhone(false);
             }
         });
 
         check_box_call_type_3.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SettingUtil.switchCallType3(isChecked);
-            if (!isChecked && !SettingUtil.getSwitchCallType1() && !SettingUtil.getSwitchCallType2() && !SettingUtil.getSwitchCallType3()) {
+            SettingUtils.switchCallType3(isChecked);
+            if (!isChecked && !SettingUtils.getSwitchCallType1() && !SettingUtils.getSwitchCallType2() && !SettingUtils.getSwitchCallType3()) {
                 ToastUtils.show(R.string.enable_phone_fw_tips);
-                SettingUtil.switchEnablePhone(false);
+                SettingUtils.switchEnablePhone(false);
             }
         });
     }
@@ -282,7 +274,7 @@ public class SettingActivity extends AppCompatActivity {
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private void switchEnableAppNotify(Switch switch_enable_app_notify, CheckBox checkbox_cancel_app_notify, CheckBox checkbox_not_user_present) {
         final LinearLayout layout_cancel_app_notify = findViewById(R.id.layout_cancel_app_notify);
-        boolean isEnable = SettingUtil.getSwitchEnableAppNotify();
+        boolean isEnable = SettingUtils.getSwitchEnableAppNotify();
         switch_enable_app_notify.setChecked(isEnable);
         layout_cancel_app_notify.setVisibility(isEnable ? View.VISIBLE : View.GONE);
 
@@ -290,33 +282,33 @@ public class SettingActivity extends AppCompatActivity {
             layout_cancel_app_notify.setVisibility(isChecked ? View.VISIBLE : View.GONE);
             //TODO:校验使用APP通知转发必备的权限
             if (isChecked) {
-                if (!CommonUtil.isNotificationListenerServiceEnabled(this)) {
-                    CommonUtil.openNotificationAccess(this);
+                if (!CommonUtils.isNotificationListenerServiceEnabled(this)) {
+                    CommonUtils.openNotificationAccess(this);
                     ToastUtils.delayedShow(R.string.tips_notification_listener, 3000);
                     return;
                 } else {
                     ToastUtils.delayedShow(R.string.notification_service_is_on, 3000);
-                    CommonUtil.toggleNotificationListenerService(this);
+                    CommonUtils.toggleNotificationListenerService(this);
                 }
             }
-            SettingUtil.switchEnableAppNotify(isChecked);
+            SettingUtils.switchEnableAppNotify(isChecked);
             Log.d(TAG, "switchEnableAppNotify:" + isChecked);
         });
 
-        checkbox_cancel_app_notify.setChecked(SettingUtil.getSwitchCancelAppNotify());
+        checkbox_cancel_app_notify.setChecked(SettingUtils.getSwitchCancelAppNotify());
         checkbox_cancel_app_notify.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SettingUtil.switchCancelAppNotify(isChecked);
+            SettingUtils.switchCancelAppNotify(isChecked);
             Log.d(TAG, "switchCancelAppNotify:" + isChecked);
         });
 
-        checkbox_not_user_present.setChecked(SettingUtil.getSwitchNotUserPresent());
+        checkbox_not_user_present.setChecked(SettingUtils.getSwitchNotUserPresent());
         checkbox_not_user_present.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SettingUtil.switchNotUserPresent(isChecked);
+            SettingUtils.switchNotUserPresent(isChecked);
             Log.d(TAG, "switchNotUserPresent:" + isChecked);
 
             //1像素透明Activity保活 or 仅锁屏状态转发APP通知
             OnePixelManager onePixelManager = new OnePixelManager();
-            if (SettingUtil.getOnePixelActivity() || SettingUtil.getSwitchNotUserPresent()) {
+            if (SettingUtils.getOnePixelActivity() || SettingUtils.getSwitchNotUserPresent()) {
                 onePixelManager.registerOnePixelReceiver(this);//注册广播接收者
             } else {
                 onePixelManager.unregisterOnePixelReceiver(this);
@@ -326,62 +318,42 @@ public class SettingActivity extends AppCompatActivity {
 
     //请求通知使用权限
     public void requestNotificationPermission(View view) {
-        if (!CommonUtil.isNotificationListenerServiceEnabled(this)) {
-            CommonUtil.openNotificationAccess(this);
+        if (!CommonUtils.isNotificationListenerServiceEnabled(this)) {
+            CommonUtils.openNotificationAccess(this);
         } else {
             ToastUtils.show(R.string.notification_listener_service_enabled);
-            CommonUtil.toggleNotificationListenerService(this);
+            CommonUtils.toggleNotificationListenerService(this);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CommonUtil.NOTIFICATION_REQUEST_CODE) {
-            if (CommonUtil.isNotificationListenerServiceEnabled(this)) {
+        if (requestCode == CommonUtils.NOTIFICATION_REQUEST_CODE) {
+            if (CommonUtils.isNotificationListenerServiceEnabled(this)) {
                 ToastUtils.show(R.string.notification_listener_service_enabled);
-                CommonUtil.toggleNotificationListenerService(this);
-                SettingUtil.switchEnableAppNotify(true);
+                CommonUtils.toggleNotificationListenerService(this);
+                SettingUtils.switchEnableAppNotify(true);
             } else {
                 ToastUtils.show(R.string.notification_listener_service_disabled);
-                SettingUtil.switchEnableAppNotify(false);
+                SettingUtils.switchEnableAppNotify(false);
             }
 
             @SuppressLint("UseSwitchCompatOrMaterialCode") Switch switch_enable_app_notify = findViewById(R.id.switch_enable_app_notify);
-            switch_enable_app_notify.setChecked(SettingUtil.getSwitchEnableAppNotify());
+            switch_enable_app_notify.setChecked(SettingUtils.getSwitchEnableAppNotify());
         }
-    }
-
-    //SmsHubApiTask
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private void editSmsHubConfig(Switch switch_enable_send_sms, ClearEditText editText_text_send_sms) {
-        switch_enable_send_sms.setChecked(SettingUtil.getSwitchEnableSmsHubApi());
-        switch_enable_send_sms.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            String webServer = editText_text_send_sms.getText().trim();
-            if (isChecked && !CommonUtil.checkUrl(webServer, false)) {
-                HttpUtil.Toast(TAG, getString(R.string.invalid_webserver));
-                switch_enable_send_sms.setChecked(false);
-                return;
-            }
-            SettingUtil.switchEnableSmsHubApi(isChecked);
-            Log.d(TAG, "switchEnableSendApi:" + isChecked);
-            SmsHubApiTask.updateTimer();
-        });
-
-        editText_text_send_sms.setText(SettingUtil.getSmsHubApiUrl());
-        editText_text_send_sms.setOnEditInputListener(content -> SettingUtil.smsHubApiUrl(content.trim()));
     }
 
     //HttpServer
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private void switchEnableHttpServer(Switch switch_enable_http_server) {
-        switch_enable_http_server.setChecked(SettingUtil.getSwitchEnableHttpServer());
+        switch_enable_http_server.setChecked(SettingUtils.getSwitchEnableHttpServer());
 
         switch_enable_http_server.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SettingUtil.switchEnableHttpServer(isChecked);
+            SettingUtils.switchEnableHttpServer(isChecked);
             Log.d(TAG, "switchEnableHttpServer:" + isChecked);
 
-            HttpUtil.init(this);
+            HttpUtils.init(this);
             HttpServer.init(this);
             HttpServer.update();
         });
@@ -390,18 +362,18 @@ public class SettingActivity extends AppCompatActivity {
     //监听电池状态变化
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private void switchBatteryReceiver(Switch switch_battery_receiver) {
-        switch_battery_receiver.setChecked(SettingUtil.getSwitchEnableBatteryReceiver());
+        switch_battery_receiver.setChecked(SettingUtils.getSwitchEnableBatteryReceiver());
 
         switch_battery_receiver.setOnCheckedChangeListener((buttonView, isChecked) -> {
             //TODO:校验使用来电转发必备的权限
-            SettingUtil.switchEnableBatteryReceiver(isChecked);
+            SettingUtils.switchEnableBatteryReceiver(isChecked);
             Log.d(TAG, "switchEnablePhone:" + isChecked);
         });
     }
 
     //设置低电量报警
     private void editBatteryLevelAlarm(final EditText et_battery_level_alarm_min, final EditText et_battery_level_alarm_max, CheckBox cb_battery_level_alarm_once) {
-        et_battery_level_alarm_min.setText(String.valueOf(SettingUtil.getBatteryLevelAlarmMin()));
+        et_battery_level_alarm_min.setText(String.valueOf(SettingUtils.getBatteryLevelAlarmMin()));
         et_battery_level_alarm_min.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -415,14 +387,14 @@ public class SettingActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 String batteryLevel = et_battery_level_alarm_min.getText().toString().trim();
                 if (!batteryLevel.isEmpty()) {
-                    SettingUtil.setBatteryLevelAlarmMin(Integer.parseInt(batteryLevel));
+                    SettingUtils.setBatteryLevelAlarmMin(Integer.parseInt(batteryLevel));
                 } else {
-                    SettingUtil.setBatteryLevelAlarmMin(0);
+                    SettingUtils.setBatteryLevelAlarmMin(0);
                 }
             }
         });
 
-        et_battery_level_alarm_max.setText(String.valueOf(SettingUtil.getBatteryLevelAlarmMax()));
+        et_battery_level_alarm_max.setText(String.valueOf(SettingUtils.getBatteryLevelAlarmMax()));
         et_battery_level_alarm_max.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -436,19 +408,19 @@ public class SettingActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 String batteryLevel = et_battery_level_alarm_max.getText().toString().trim();
                 if (!batteryLevel.isEmpty()) {
-                    SettingUtil.setBatteryLevelAlarmMax(Integer.parseInt(batteryLevel));
+                    SettingUtils.setBatteryLevelAlarmMax(Integer.parseInt(batteryLevel));
                 } else {
-                    SettingUtil.setBatteryLevelAlarmMax(0);
+                    SettingUtils.setBatteryLevelAlarmMax(0);
                 }
             }
         });
 
-        cb_battery_level_alarm_once.setChecked(SettingUtil.getBatteryLevelAlarmOnce());
+        cb_battery_level_alarm_once.setChecked(SettingUtils.getBatteryLevelAlarmOnce());
         cb_battery_level_alarm_once.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SettingUtil.switchBatteryLevelAlarmOnce(isChecked);
-            if (isChecked && 0 == SettingUtil.getBatteryLevelAlarmMin() && 0 == SettingUtil.getBatteryLevelAlarmMax()) {
+            SettingUtils.switchBatteryLevelAlarmOnce(isChecked);
+            if (isChecked && 0 == SettingUtils.getBatteryLevelAlarmMin() && 0 == SettingUtils.getBatteryLevelAlarmMax()) {
                 ToastUtils.show(R.string.tips_battery_level_alarm_once);
-                SettingUtil.switchEnablePhone(false);
+                SettingUtils.switchEnablePhone(false);
             }
         });
     }
@@ -456,7 +428,7 @@ public class SettingActivity extends AppCompatActivity {
     //定时推送电池状态
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private void switchBatteryCron(Switch switch_battery_cron) {
-        boolean isOn = SettingUtil.getSwitchEnableBatteryCron();
+        boolean isOn = SettingUtils.getSwitchEnableBatteryCron();
         switch_battery_cron.setChecked(isOn);
 
         final LinearLayout layout_battery_cron = findViewById(R.id.layout_battery_cron);
@@ -465,14 +437,14 @@ public class SettingActivity extends AppCompatActivity {
         switch_battery_cron.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Log.d(TAG, "onCheckedChanged:" + isChecked);
             layout_battery_cron.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-            SettingUtil.switchEnableBatteryCron(isChecked);
+            SettingUtils.switchEnableBatteryCron(isChecked);
             BatteryReportCronTask.getSingleton().updateTimer();
         });
     }
 
     //设置推送电池状态时机
     private void editBatteryCronTiming(final EditText et_battery_cron_start_time, final EditText et_battery_cron_interval) {
-        et_battery_cron_start_time.setText(SettingUtil.getBatteryCronStartTime());
+        et_battery_cron_start_time.setText(SettingUtils.getBatteryCronStartTime());
 
         Calendar calendar = Calendar.getInstance();
         et_battery_cron_start_time.setOnClickListener(view -> {
@@ -489,13 +461,13 @@ public class SettingActivity extends AppCompatActivity {
                 sb.append(minute);
                 String startTime = sb.toString();
                 et_battery_cron_start_time.setText(startTime);
-                SettingUtil.setBatteryCronStartTime(startTime);
+                SettingUtils.setBatteryCronStartTime(startTime);
                 BatteryReportCronTask.getSingleton().updateTimer();
             }, calendar.get(Calendar.HOUR_OF_DAY) + 1, 0, true);
             dialog.show();
         });
 
-        et_battery_cron_interval.setText(String.valueOf(SettingUtil.getBatteryCronInterval()));
+        et_battery_cron_interval.setText(String.valueOf(SettingUtils.getBatteryCronInterval()));
         et_battery_cron_interval.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -509,10 +481,10 @@ public class SettingActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 String interval = et_battery_cron_interval.getText().toString().trim();
                 if (!interval.isEmpty() && Integer.parseInt(interval) > 0) {
-                    SettingUtil.setBatteryCronInterval(Integer.parseInt(interval));
+                    SettingUtils.setBatteryCronInterval(Integer.parseInt(interval));
                     BatteryReportCronTask.getSingleton().updateTimer();
                 } else {
-                    SettingUtil.setBatteryCronInterval(60);
+                    SettingUtils.setBatteryCronInterval(60);
                 }
             }
         });
@@ -743,10 +715,10 @@ public class SettingActivity extends AppCompatActivity {
     //不在最近任务列表中显示
     @SuppressLint("ObsoleteSdkInt,UseSwitchCompatOrMaterialCode")
     private void switchExcludeFromRecents(Switch switch_exclude_from_recents) {
-        switch_exclude_from_recents.setChecked(SettingUtil.getExcludeFromRecents());
+        switch_exclude_from_recents.setChecked(SettingUtils.getExcludeFromRecents());
 
         switch_exclude_from_recents.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SettingUtil.switchExcludeFromRecents(isChecked);
+            SettingUtils.switchExcludeFromRecents(isChecked);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ActivityManager am = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
                 if (am != null) {
@@ -763,10 +735,10 @@ public class SettingActivity extends AppCompatActivity {
     //后台播放无声音乐
     @SuppressLint("ObsoleteSdkInt,UseSwitchCompatOrMaterialCode")
     private void switchPlaySilenceMusic(Switch switch_play_silence_music) {
-        switch_play_silence_music.setChecked(SettingUtil.getPlaySilenceMusic());
+        switch_play_silence_music.setChecked(SettingUtils.getPlaySilenceMusic());
 
         switch_play_silence_music.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SettingUtil.switchPlaySilenceMusic(isChecked);
+            SettingUtils.switchPlaySilenceMusic(isChecked);
 
             if (isChecked) {
                 startService(new Intent(context, MusicService.class));
@@ -780,15 +752,15 @@ public class SettingActivity extends AppCompatActivity {
     //1像素透明Activity保活
     @SuppressLint("ObsoleteSdkInt,UseSwitchCompatOrMaterialCode")
     private void switchOnePixelActivity(Switch switch_one_pixel_activity) {
-        switch_one_pixel_activity.setChecked(SettingUtil.getOnePixelActivity());
+        switch_one_pixel_activity.setChecked(SettingUtils.getOnePixelActivity());
 
         switch_one_pixel_activity.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SettingUtil.switchOnePixelActivity(isChecked);
+            SettingUtils.switchOnePixelActivity(isChecked);
             Log.d(TAG, "onCheckedChanged:" + isChecked);
 
             //1像素透明Activity保活 or 仅锁屏状态转发APP通知
             OnePixelManager onePixelManager = new OnePixelManager();
-            if (SettingUtil.getOnePixelActivity() || SettingUtil.getSwitchNotUserPresent()) {
+            if (SettingUtils.getOnePixelActivity() || SettingUtils.getSwitchNotUserPresent()) {
                 onePixelManager.registerOnePixelReceiver(this);//注册广播接收者
             } else {
                 onePixelManager.unregisterOnePixelReceiver(this);
@@ -798,7 +770,7 @@ public class SettingActivity extends AppCompatActivity {
 
     //接口请求失败重试时间间隔
     private void editRetryDelayTime(final EditText et_retry_times, final EditText et_delay_time) {
-        et_retry_times.setText(String.valueOf(SettingUtil.getRetryTimes()));
+        et_retry_times.setText(String.valueOf(SettingUtils.getRetryTimes()));
         et_retry_times.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -812,14 +784,14 @@ public class SettingActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 String retryTimes = et_retry_times.getText().toString().trim();
                 if (!retryTimes.isEmpty()) {
-                    SettingUtil.setRetryTimes(Integer.parseInt(retryTimes));
+                    SettingUtils.setRetryTimes(Integer.parseInt(retryTimes));
                 } else {
-                    SettingUtil.setRetryTimes(0);
+                    SettingUtils.setRetryTimes(0);
                 }
             }
         });
 
-        et_delay_time.setText(String.valueOf(SettingUtil.getDelayTime()));
+        et_delay_time.setText(String.valueOf(SettingUtils.getDelayTime()));
         et_delay_time.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -833,9 +805,9 @@ public class SettingActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 String delayTime = et_delay_time.getText().toString().trim();
                 if (!delayTime.isEmpty()) {
-                    SettingUtil.setDelayTime(Integer.parseInt(delayTime));
+                    SettingUtils.setDelayTime(Integer.parseInt(delayTime));
                 } else {
-                    SettingUtil.setDelayTime(1);
+                    SettingUtils.setDelayTime(1);
                 }
             }
         });
@@ -843,7 +815,7 @@ public class SettingActivity extends AppCompatActivity {
 
     //设置设备名称
     private void editAddExtraDeviceMark(final EditText et_add_extra_device_mark) {
-        et_add_extra_device_mark.setText(SettingUtil.getAddExtraDeviceMark());
+        et_add_extra_device_mark.setText(SettingUtils.getAddExtraDeviceMark());
 
         et_add_extra_device_mark.addTextChangedListener(new TextWatcher() {
             @Override
@@ -856,14 +828,14 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                SettingUtil.setAddExtraDeviceMark(et_add_extra_device_mark.getText().toString().trim());
+                SettingUtils.setAddExtraDeviceMark(et_add_extra_device_mark.getText().toString().trim());
             }
         });
     }
 
     //设置SIM1备注
     private void editAddExtraSim1(final EditText et_add_extra_sim1) {
-        et_add_extra_sim1.setText(SettingUtil.getAddExtraSim1());
+        et_add_extra_sim1.setText(SettingUtils.getAddExtraSim1());
 
         et_add_extra_sim1.addTextChangedListener(new TextWatcher() {
             @Override
@@ -876,14 +848,14 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                SettingUtil.setAddExtraSim1(et_add_extra_sim1.getText().toString().trim());
+                SettingUtils.setAddExtraSim1(et_add_extra_sim1.getText().toString().trim());
             }
         });
     }
 
     //设置SIM2备注
     private void editAddExtraSim2(final EditText et_add_extra_sim2) {
-        et_add_extra_sim2.setText(SettingUtil.getAddExtraSim2());
+        et_add_extra_sim2.setText(SettingUtils.getAddExtraSim2());
 
         et_add_extra_sim2.addTextChangedListener(new TextWatcher() {
             @Override
@@ -896,7 +868,7 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                SettingUtil.setAddExtraSim2(et_add_extra_sim2.getText().toString().trim());
+                SettingUtils.setAddExtraSim2(et_add_extra_sim2.getText().toString().trim());
             }
         });
     }
@@ -904,7 +876,7 @@ public class SettingActivity extends AppCompatActivity {
     //设置转发时启用自定义模版
     @SuppressLint({"UseSwitchCompatOrMaterialCode", "SetTextI18n"})
     private void switchSmsTemplate(Switch switch_sms_template) {
-        boolean isOn = SettingUtil.getSwitchSmsTemplate();
+        boolean isOn = SettingUtils.getSwitchSmsTemplate();
         switch_sms_template.setChecked(isOn);
 
         final LinearLayout layout_sms_template = findViewById(R.id.layout_sms_template);
@@ -914,7 +886,7 @@ public class SettingActivity extends AppCompatActivity {
         switch_sms_template.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Log.d(TAG, "onCheckedChanged:" + isChecked);
             layout_sms_template.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-            SettingUtil.switchSmsTemplate(isChecked);
+            SettingUtils.switchSmsTemplate(isChecked);
             if (!isChecked) {
                 textSmsTemplate.setText(getString(R.string.tag_from) + "\n" +
                         getString(R.string.tag_sms) + "\n" +
@@ -927,7 +899,7 @@ public class SettingActivity extends AppCompatActivity {
 
     //设置转发信息模版
     private void editSmsTemplate(final EditText textSmsTemplate) {
-        textSmsTemplate.setText(SettingUtil.getSmsTemplate());
+        textSmsTemplate.setText(SettingUtils.getSmsTemplate());
 
         textSmsTemplate.addTextChangedListener(new TextWatcher() {
             @Override
@@ -942,7 +914,7 @@ public class SettingActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                SettingUtil.setSmsTemplate(textSmsTemplate.getText().toString().trim());
+                SettingUtils.setSmsTemplate(textSmsTemplate.getText().toString().trim());
             }
         });
     }
@@ -955,19 +927,19 @@ public class SettingActivity extends AppCompatActivity {
         textSmsTemplate.requestFocus();
         switch (v.getId()) {
             case R.id.bt_insert_sender:
-                CommonUtil.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_from));
+                CommonUtils.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_from));
                 return;
             case R.id.bt_insert_content:
-                CommonUtil.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_sms));
+                CommonUtils.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_sms));
                 return;
             case R.id.bt_insert_extra:
-                CommonUtil.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_card_slot));
+                CommonUtils.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_card_slot));
                 return;
             case R.id.bt_insert_time:
-                CommonUtil.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_receive_time));
+                CommonUtils.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_receive_time));
                 return;
             case R.id.bt_insert_device_name:
-                CommonUtil.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_device_name));
+                CommonUtils.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_device_name));
                 return;
             default:
         }
@@ -985,7 +957,7 @@ public class SettingActivity extends AppCompatActivity {
 
             StepBar stepBar = findViewById(R.id.stepBar);
             stepBar.setHighlight();
-            CommonUtil.calcMarginBottom(this, null, null, findViewById(R.id.scrollView));
+            CommonUtils.calcMarginBottom(this, null, null, findViewById(R.id.scrollView));
         });
     }
 
@@ -1020,60 +992,6 @@ public class SettingActivity extends AppCompatActivity {
         });
 
         builder.create().show();
-    }
-
-    //启用menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    //menu点击事件
-    @SuppressLint("NonConstantResourceId")
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-        switch (item.getItemId()) {
-            case R.id.to_app_list:
-                intent = new Intent(this, AppListActivity.class);
-                break;
-            case R.id.to_clone:
-                intent = new Intent(this, CloneActivity.class);
-                break;
-            case R.id.to_about:
-                intent = new Intent(this, AboutActivity.class);
-                break;
-            case R.id.to_help:
-                Uri uri = Uri.parse("https://gitee.com/pp/SmsForwarder/wikis/pages");
-                intent = new Intent(Intent.ACTION_VIEW, uri);
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-        startActivity(intent);
-        return true;
-    }
-
-    //设置menu图标显示
-    @Override
-    public boolean onMenuOpened(int featureId, Menu menu) {
-        Log.d(TAG, "onMenuOpened, featureId=" + featureId);
-        if (menu != null) {
-            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
-                try {
-                    Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
-                    m.setAccessible(true);
-                    m.invoke(menu, true);
-                } catch (NoSuchMethodException e) {
-                    Log.e(TAG, "onMenuOpened", e);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return super.onMenuOpened(featureId, menu);
     }
 
     /**

@@ -88,14 +88,14 @@
 - [x] 转发规则上支持配置正则替换内容
 - [x] 转发到 Gotify发送通道（自主推送通知服务）
 - [x] 被动接收本地 HttpServer
-- [x] 主动轮询远程 SmsHub Api
+- [x] 主动轮询远程 SmsHub Api（v2.5.0+已删除）
 - [x] 适配暗夜模式
 
 --------
 
 ### 应用截图：
 
-| 前台服务常驻状态栏 | 应用主界面 | 发送通道 |                           转发规则                           |
+| 前台服务常驻状态栏 | 应用主界面 | 发送通道 | 转发规则 |
 |  :--:  | :--:  |  :--:  | :--:  |
 | ![前台服务常驻状态栏](pic/taskbar.jpg "前台服务常驻状态栏") | ![应用主界面](pic/main.jpg "应用主界面") | ![发送通道](pic/sender.png "发送通道") | ![转发规则](pic/rule.jpg "转发规则") |
 | 转发规则--短信转发 | 转发规则--通话记录 | 转发规则--APP通知 | 转发日志详情 |
@@ -127,7 +127,8 @@
 + https://github.com/alibaba/fastjson (Json解析)
 + https://github.com/getActivity/XXPermissions (权限请求框架)
 + https://github.com/Xcreen/RestSMS （被动接收本地API方案）
-+ https://github.com/juancrescente/SMSHub （主动轮询远程API方案）
++ ~~https://github.com/juancrescente/SMSHub （主动轮询远程API方案，v2.5.0+删除）~~
++ https://github.com/mainfunx/frpc_android (内网穿透)
 + [<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg?_ga=2.126618957.1361252949.1638261367-1417196221.1635638144&_gl=1*1pfl3dq*_ga*MTQxNzE5NjIyMS4xNjM1NjM4MTQ0*_ga_V0XZL7QHEB*MTYzODMzMjA4OC43LjAuMTYzODMzMjA5Ny4w" alt="GitHub license" style="zoom:50%;" />](https://jb.gg/OpenSourceSupport)  (License Certificate for JetBrains All Products Pack)
 
 --------

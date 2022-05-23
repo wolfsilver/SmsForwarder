@@ -9,12 +9,10 @@ import com.idormy.sms.forwarder.R;
 import com.idormy.sms.forwarder.model.vo.SmsHubVo;
 import com.idormy.sms.forwarder.receiver.BaseServlet;
 import com.idormy.sms.forwarder.utils.Define;
-import com.idormy.sms.forwarder.utils.NetUtil;
-import com.idormy.sms.forwarder.utils.SettingUtil;
-import com.idormy.sms.forwarder.utils.SmsHubActionHandler;
+import com.idormy.sms.forwarder.utils.NetUtils;
+import com.idormy.sms.forwarder.utils.SettingUtils;
 
 import org.eclipse.jetty.server.Server;
-
 
 public class HttpServer {
     private static Boolean hasInit = false;
@@ -22,7 +20,6 @@ public class HttpServer {
     @SuppressLint("StaticFieldLeak")
     private static Context context;
     private static long ts = 0L;
-
 
     @SuppressLint("HandlerLeak")
     public static void init(Context context) {
@@ -32,7 +29,6 @@ public class HttpServer {
 
             hasInit = true;
             HttpServer.context = context;
-            SmsHubActionHandler.init(context);
             jettyServer = new Server(Define.HTTP_SERVER_PORT);
             BaseServlet.addServlet(jettyServer, context);
         }
@@ -49,9 +45,20 @@ public class HttpServer {
         return false;
     }
 
+    /**
+     * Checks if Jetty is stopping
+     * boolean - True when server is stopping
+     */
+    private synchronized static Boolean asStopp() {
+        if (jettyServer != null) {
+            return !(jettyServer.isRunning() || jettyServer.isStopping());
+        }
+        return true;
+    }
+
     public synchronized static boolean update() {
         //非WiFi网络下不可启用
-        if (NetUtil.NETWORK_WIFI != NetUtil.getNetWorkStatus()) {
+        if (NetUtils.NETWORK_WIFI != NetUtils.getNetWorkStatus()) {
             ToastUtils.show(R.string.no_wifi_network);
             if (asRunning()) stop();
             return false;
@@ -61,10 +68,10 @@ public class HttpServer {
             ToastUtils.show(R.string.tips_wait_3_seconds);
             return false;
         }
-        if (asRunning().equals(SettingUtil.getSwitchEnableHttpServer())) {
+        if (asRunning().equals(SettingUtils.getSwitchEnableHttpServer())) {
             return false;
         }
-        if (SettingUtil.getSwitchEnableHttpServer()) {
+        if (SettingUtils.getSwitchEnableHttpServer()) {
             SmsHubVo.getDevInfoMap(true);
             start();
             ts = System.currentTimeMillis();
@@ -76,42 +83,25 @@ public class HttpServer {
         return true;
     }
 
-    /**
-     * Checks if Jetty is stopping
-     * boolean - True when server is stopping
-     */
-    private synchronized static Boolean asStopp() {
-        if (jettyServer != null) {
-            return !(jettyServer.isRunning() || jettyServer.isStopping());
-        } else {
-            return true;
-        }
-    }
-
     private static void start() {
         stop();
         Log.i("HttpServer", "start");
-        //new Thread(() -> {
         try {
-            //Start Jetty
             jettyServer.start();
-            //jettyServer.join();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //}).start();
     }
 
     private static void stop() {
-        if (Boolean.FALSE.equals(asStopp())) {
-            try {
-                if (jettyServer != null) {
-                    jettyServer.stop();
-                    //jettyServer = new Server(port);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        if (asStopp()) return;
+
+        try {
+            if (jettyServer != null) {
+                jettyServer.stop();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

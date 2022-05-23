@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import com.alibaba.fastjson.JSON;
 import com.idormy.sms.forwarder.model.vo.TelegramSettingVo;
 import com.idormy.sms.forwarder.utils.Define;
-import com.idormy.sms.forwarder.utils.LogUtil;
+import com.idormy.sms.forwarder.utils.LogUtils;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -43,9 +43,8 @@ public class SenderTelegramMsg extends SenderBaseMsg {
             return;
         }
 
-        //特殊处理避免标题重复
         // final String finalText = text.trim();
-        // final String finalText = text.replaceAll("#", "井").trim();
+        // final String finalText = text.trim(); //.replaceAll("#", "井")
         final String finalText = text.replaceAll("<", "&lt;").replaceAll(">", "&gt;").trim();
         // final String finalText = text.replaceAll("[-.+?^$[\](){}\\]", "\\$&").trim();
 
@@ -115,7 +114,7 @@ public class SenderTelegramMsg extends SenderBaseMsg {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull final IOException e) {
-                LogUtil.updateLog(logId, 0, e.getMessage());
+                LogUtils.updateLog(logId, 0, e.getMessage());
                 Toast(handError, TAG, "发送失败：" + e.getMessage());
             }
 
@@ -127,9 +126,9 @@ public class SenderTelegramMsg extends SenderBaseMsg {
 
                 //TODO:粗略解析是否发送成功
                 if (responseStr.contains("\"ok\":true")) {
-                    LogUtil.updateLog(logId, 2, responseStr);
+                    LogUtils.updateLog(logId, 2, responseStr);
                 } else {
-                    LogUtil.updateLog(logId, 0, responseStr);
+                    LogUtils.updateLog(logId, 0, responseStr);
                 }
             }
         });

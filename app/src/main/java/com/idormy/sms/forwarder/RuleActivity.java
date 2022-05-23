@@ -5,14 +5,10 @@ import static com.idormy.sms.forwarder.model.RuleModel.STATUS_OFF;
 import static com.idormy.sms.forwarder.model.RuleModel.STATUS_ON;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +20,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hjq.toast.ToastUtils;
@@ -34,19 +29,18 @@ import com.idormy.sms.forwarder.model.SenderModel;
 import com.idormy.sms.forwarder.model.vo.SmsVo;
 import com.idormy.sms.forwarder.sender.SendUtil;
 import com.idormy.sms.forwarder.sender.SenderUtil;
-import com.idormy.sms.forwarder.utils.CommonUtil;
-import com.idormy.sms.forwarder.utils.LogUtil;
-import com.idormy.sms.forwarder.utils.RuleUtil;
-import com.idormy.sms.forwarder.utils.SettingUtil;
+import com.idormy.sms.forwarder.utils.CommonUtils;
+import com.idormy.sms.forwarder.utils.LogUtils;
+import com.idormy.sms.forwarder.utils.RuleUtils;
+import com.idormy.sms.forwarder.utils.SettingUtils;
 import com.idormy.sms.forwarder.view.StepBar;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
-public class RuleActivity extends AppCompatActivity {
+public class RuleActivity extends BaseActivity {
 
     private final String TAG = "RuleActivity";
     // 用于存储数据
@@ -72,8 +66,8 @@ public class RuleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rule);
 
-        LogUtil.init(this);
-        RuleUtil.init(this);
+        LogUtils.init(this);
+        RuleUtils.init(this);
         SenderUtil.init(this);
     }
 
@@ -105,7 +99,7 @@ public class RuleActivity extends AppCompatActivity {
             builder.setMessage(R.string.delete_rule_tips);
 
             builder.setPositiveButton(R.string.confirm, (dialog, which) -> {
-                RuleUtil.delRule(ruleModels.get(position).getId());
+                RuleUtils.delRule(ruleModels.get(position).getId());
                 initRules();
                 adapter.del(ruleModels);
                 ToastUtils.show(R.string.delete_rule_toast);
@@ -139,7 +133,7 @@ public class RuleActivity extends AppCompatActivity {
 
         //计算浮动按钮位置
         FloatingActionButton btnAddRule = findViewById(R.id.btnAddRule);
-        CommonUtil.calcMarginBottom(this, btnAddRule, listView, null);
+        CommonUtils.calcMarginBottom(this, btnAddRule, listView, null);
 
         //添加规则
         btnAddRule.setOnClickListener(v -> setRule(null, false));
@@ -184,7 +178,7 @@ public class RuleActivity extends AppCompatActivity {
 
     // 初始化数据
     private void initRules() {
-        ruleModels = RuleUtil.getRule(null, null, currentType);
+        ruleModels = RuleUtils.getRule(null, null, currentType);
     }
 
     private void setRule(final RuleModel ruleModel, final boolean isClone) {
@@ -294,7 +288,7 @@ public class RuleActivity extends AppCompatActivity {
                 newRuleModel.setRegexReplace(regexReplace);
                 newRuleModel.setSenderId(Long.valueOf(senderId.toString()));
                 newRuleModel.setStatus(switchRuleStatus.isChecked() ? STATUS_ON : STATUS_OFF);
-                RuleUtil.addRule(newRuleModel);
+                RuleUtils.addRule(newRuleModel);
                 initRules();
                 adapter.add(ruleModels);
             } else {
@@ -308,7 +302,7 @@ public class RuleActivity extends AppCompatActivity {
                 ruleModel.setRegexReplace(regexReplace);
                 ruleModel.setSenderId(Long.valueOf(senderId.toString()));
                 ruleModel.setStatus(switchRuleStatus.isChecked() ? STATUS_ON : STATUS_OFF);
-                RuleUtil.updateRule(ruleModel);
+                RuleUtils.updateRule(ruleModel);
                 initRules();
                 adapter.update(ruleModels);
             }
@@ -317,7 +311,7 @@ public class RuleActivity extends AppCompatActivity {
 
         buttonRuleDel.setOnClickListener(view -> {
             if (ruleModel != null) {
-                RuleUtil.delRule(ruleModel.getId());
+                RuleUtils.delRule(ruleModel.getId());
                 initRules();
                 adapter.del(ruleModels);
             }
@@ -386,49 +380,49 @@ public class RuleActivity extends AppCompatActivity {
         buttonInsertSender.setOnClickListener(view -> {
             textSmsTemplate.setFocusable(true);
             textSmsTemplate.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_from));
+            CommonUtils.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_from));
         });
 
         Button buttonInsertContent = view1.findViewById(R.id.bt_insert_content);
         buttonInsertContent.setOnClickListener(view -> {
             textSmsTemplate.setFocusable(true);
             textSmsTemplate.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_sms));
+            CommonUtils.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_sms));
         });
 
         Button buttonInsertSenderApp = view1.findViewById(R.id.bt_insert_sender_app);
         buttonInsertSenderApp.setOnClickListener(view -> {
             textSmsTemplate.setFocusable(true);
             textSmsTemplate.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_package_name));
+            CommonUtils.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_package_name));
         });
 
         Button buttonInsertContentApp = view1.findViewById(R.id.bt_insert_content_app);
         buttonInsertContentApp.setOnClickListener(view -> {
             textSmsTemplate.setFocusable(true);
             textSmsTemplate.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_msg));
+            CommonUtils.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_msg));
         });
 
         Button buttonInsertExtra = view1.findViewById(R.id.bt_insert_extra);
         buttonInsertExtra.setOnClickListener(view -> {
             textSmsTemplate.setFocusable(true);
             textSmsTemplate.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_card_slot));
+            CommonUtils.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_card_slot));
         });
 
         Button buttonInsertTime = view1.findViewById(R.id.bt_insert_time);
         buttonInsertTime.setOnClickListener(view -> {
             textSmsTemplate.setFocusable(true);
             textSmsTemplate.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_receive_time));
+            CommonUtils.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_receive_time));
         });
 
         Button buttonInsertDeviceName = view1.findViewById(R.id.bt_insert_device_name);
         buttonInsertDeviceName.setOnClickListener(view -> {
             textSmsTemplate.setFocusable(true);
             textSmsTemplate.requestFocus();
-            CommonUtil.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_device_name));
+            CommonUtils.insertOrReplaceText2Cursor(textSmsTemplate, getString(R.string.tag_device_name));
         });
 
         //正则替换
@@ -582,9 +576,9 @@ public class RuleActivity extends AppCompatActivity {
                 String simSlot = RuleModel.getRuleSimSlotFromCheckId(radioGroupTestSimSlot.getCheckedRadioButtonId());
                 String simInfo;
                 if (simSlot.equals("SIM2")) {
-                    simInfo = simSlot + "_" + SettingUtil.getAddExtraSim2();
+                    simInfo = simSlot + "_" + SettingUtils.getAddExtraSim2();
                 } else {
-                    simInfo = simSlot + "_" + SettingUtil.getAddExtraSim1();
+                    simInfo = simSlot + "_" + SettingUtils.getAddExtraSim1();
                 }
                 SmsVo testSmsVo = new SmsVo(editTextTestPhone.getText().toString().trim(), editTextTestMsgContent.getText().toString().trim(), new Date(), simInfo);
                 SendUtil.sendMsgByRuleModelSenderId(handler, ruleModel, testSmsVo, senderId);
@@ -619,60 +613,6 @@ public class RuleActivity extends AppCompatActivity {
         }
 
         return 0;
-    }
-
-    //启用menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    //menu点击事件
-    @SuppressLint("NonConstantResourceId")
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-        switch (item.getItemId()) {
-            case R.id.to_app_list:
-                intent = new Intent(this, AppListActivity.class);
-                break;
-            case R.id.to_clone:
-                intent = new Intent(this, CloneActivity.class);
-                break;
-            case R.id.to_about:
-                intent = new Intent(this, AboutActivity.class);
-                break;
-            case R.id.to_help:
-                Uri uri = Uri.parse("https://gitee.com/pp/SmsForwarder/wikis/pages");
-                intent = new Intent(Intent.ACTION_VIEW, uri);
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-        startActivity(intent);
-        return true;
-    }
-
-    //设置menu图标显示
-    @Override
-    public boolean onMenuOpened(int featureId, Menu menu) {
-        Log.d(TAG, "onMenuOpened, featureId=" + featureId);
-        if (menu != null) {
-            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
-                try {
-                    Method m = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
-                    m.setAccessible(true);
-                    m.invoke(menu, true);
-                } catch (NoSuchMethodException e) {
-                    Log.e(TAG, "onMenuOpened", e);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return super.onMenuOpened(featureId, menu);
     }
 
 }
