@@ -2,6 +2,9 @@ name: Nightly Build
 
 # 触发器
 on:
+  push:
+    branches:    
+      - 'telegram'
   schedule:
     - cron: '30 15 * * *' #每天在国际标准时间14点(北京时间+8，即 23:30)
   workflow_dispatch:
