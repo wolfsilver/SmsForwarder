@@ -69,9 +69,15 @@ jobs:
           name: build
           path: app/build/outputs #将打包之后的文件全部上传（里面会有混淆的map文件）
       # 上传至release的资源
-      - name: Upload release binaries
-        uses: alexellis/upload-assets@0.2.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Upload release binaries
+      #   uses: alexellis/upload-assets@0.2.2
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     asset_paths: '["./app/build/outputs/apk/release/SmsForwarder_release_*"]'
+
+      - uses: actions/upload-artifact@v3
         with:
-          asset_paths: '["./app/build/outputs/apk/release/SmsForwarder_release_*"]'
+          name: ${{ github.ref }}.${{ github.run_id }}
+          path: ./app/build/outputs/apk/release/SmsForwarder_release_*
+
