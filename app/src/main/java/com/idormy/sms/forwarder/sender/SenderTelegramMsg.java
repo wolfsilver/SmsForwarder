@@ -45,7 +45,10 @@ public class SenderTelegramMsg extends SenderBaseMsg {
 
         // final String finalText = text.trim();
         // final String finalText = text.trim(); //.replaceAll("#", "井")
-        final String finalText = text.replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("(\\d+)", "<code>$1</code>").trim();
+        final String finalText = text.replaceAll("<", "&lt;")
+                                        .replaceAll(">", "&gt;")
+                                        .replaceAll("(?<![0-9a-zA-Z!@#$%^&*()-=+_])(\\d{4,})(?![0-9a-zA-Z!@#$%^&*()-=+_])", "<code>$1</code>")
+                                        .trim();
         // final String finalText = text.replaceAll("[-.+?^$[\](){}\\]", "\\$&").trim();
 
         if (!apiToken.startsWith("http")) {
