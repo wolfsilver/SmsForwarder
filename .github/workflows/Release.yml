@@ -45,8 +45,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: SmsForwarder ${{ github.ref }}
+          tag_name: ${{ github.ref }}.${{ github.sha }}
+          release_name: SmsForwarder ${{ github.ref }}.${{ github.sha }}
           draft: false
           prerelease: false
       # 存档打包的文件
