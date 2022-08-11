@@ -5,7 +5,7 @@ on:
   push:
     tags:
       - v*
-    branches:    
+    branches:
       - 'telegram'
   pull_request:
     tags:
@@ -45,8 +45,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}.${{ github.sha }}
-          release_name: SmsForwarder ${{ github.ref }}.${{ github.sha }}
+          tag_name: ${{ github.ref }}
+          release_name: SmsForwarder ${{ github.ref }}
           draft: false
           prerelease: false
       # 存档打包的文件
