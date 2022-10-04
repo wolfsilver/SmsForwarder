@@ -4,13 +4,13 @@
 #包名不混合大小写
 -dontusemixedcaseclassnames
 #不去忽略非公共的库类
--dontskipnonpubliclibraryclasses
+#-dontskipnonpubliclibraryclasses
 # 指定不去忽略非公共的库的类的成员
--dontskipnonpubliclibraryclassmembers
+#-dontskipnonpubliclibraryclassmembers
 #优化  不优化输入的类文件
 -dontoptimize
 #预校验
--dontpreverify
+#-dontpreverify
 #混淆时是否记录日志
 -verbose
 # 混淆时所采用的算法
@@ -22,7 +22,7 @@
 
 ##记录生成的日志数据,gradle build时在本项目根目录输出##
 #apk 包内所有 class 的内部结构
--dump class_files.txt
+#-dump class_files.txt
 #未混淆的类和成员
 -printseeds seeds.txt
 #列出从 apk 中删除的代码
@@ -138,12 +138,12 @@
 -keep class microsoft.aspnet.signalr.** { *; }
 
 # 极光推送混淆
--dontoptimize
--dontpreverify
--dontwarn cn.jpush.**
--keep class cn.jpush.** { *; }
--dontwarn cn.jiguang.**
--keep class cn.jiguang.** { *; }
+#-dontoptimize
+#-dontpreverify
+#-dontwarn cn.jpush.**
+#-keep class cn.jpush.** { *; }
+#-dontwarn cn.jiguang.**
+#-keep class cn.jiguang.** { *; }
 
 # 数据库框架OrmLite
 -keepattributes *DatabaseField*
@@ -166,8 +166,6 @@
 -dontwarn com.squareup.okhttp3.**
 -keep class com.squareup.okhttp3.** { *;}
 -dontwarn okio.**
--dontwarn javax.annotation.Nullable
--dontwarn javax.annotation.ParametersAreNonnullByDefault
 -dontwarn javax.annotation.**
 
 #如果用到Gson解析包的，直接添加下面这几行就能成功混淆，不然会报错
@@ -208,8 +206,6 @@
 #}
 
 -dontwarn okio.**
--dontwarn javax.annotation.Nullable
--dontwarn javax.annotation.ParametersAreNonnullByDefault
 -dontwarn javax.annotation.**
 
 # fastjson
@@ -286,3 +282,10 @@
 -keep class javax.activation.** { *;}
 -keep class com.smailnet.emailkit.** { *;}
 -keep class com.idormy.sms.forwarder.utils.mail.** {*;}
+
+-keep public class com.xuexiang.xrouter.routes.**{*;}
+-keep class * implements com.xuexiang.xrouter.facade.template.ISyringe{*;}
+# 如果使用了 byType 的方式获取 Service，需添加下面规则，保护接口
+-keep interface * implements com.xuexiang.xrouter.facade.template.IProvider
+# 如果使用了 单类注入，即不定义接口实现 IProvider，需添加下面规则，保护实现
+-keep class * implements com.xuexiang.xrouter.facade.template.IProvider

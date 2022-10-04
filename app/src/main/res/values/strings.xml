@@ -230,6 +230,7 @@
     <string name="test_phone_number">测试模拟的来源号码</string>
     <string name="test_msg_content">测试模拟的短信内容</string>
     <string name="test_package_name">测试模拟的APP包名</string>
+    <string name="test_inform_title">测试模拟的通知标题</string>
     <string name="test_inform_content">测试模拟的通知内容</string>
     <string name="match_sim_slot">匹配卡槽</string>
     <string name="match_field">匹配字段</string>
@@ -265,7 +266,7 @@
     <string name="setserverchantitle">设置Server酱·Turbo版</string>
     <string name="settelegramtitle">设置Telegram机器人</string>
     <string name="setsmstitle">设置SMS</string>
-    <string name="setfeishutitle">设置飞书机器人</string>
+    <string name="setfeishutitle">设置飞书群机器人</string>
     <string name="setpushplustitle">设置PushPlus</string>
     <string name="setgotifytitle">设置Gotify</string>
     <string name="test_phone_num">19999999999</string>
@@ -337,7 +338,7 @@
     <string name="SmsSimSlot">发送卡槽</string>
     <string name="same_source">原进原出</string>
     <string name="SmsMobiles">接收手机</string>
-    <string name="SmsMobilesTips">多个号码以半角分号分隔，例如：15888888888;19999999999</string>
+    <string name="SmsMobilesTips">Tips：\n1.多个号码以半角分号分隔，例如：15888888888;19999999999\n2.允许插入`{{来源号码}}`标签来实现短信自动回复（短信/来电场景）</string>
     <string name="OnlyNoNetwork">仅当无网络时启用</string>
     <!--SettingActivity-->
     <string name="notify_content">通知文案</string>
@@ -392,9 +393,11 @@
     <string name="sim1" tools:ignore="Typos">SIM1</string>
     <string name="sim2" tools:ignore="Typos">SIM2</string>
     <string name="mu_rule_sms_tips">多重匹配规则示例：（语法参见wiki）\n\n并且 是 手机号 相等 10086\n[空格]或者 是 手机号 相等 10011\n并且 是 短信内容 包含 欠费\n\n以上规则表示：收到短信，并且（手机号是10086 或者 手机号是10010），并且 短信内容 包含 欠费 时转发短信\n\n注意：每行开始的空格代表层级，太过复杂的多重规则可能导致内存占用很大！</string>
-    <string name="mu_rule_app_tips">多重匹配规则示例：（语法参见wiki）\n\n并且 是 APP包名 相等 com.tencent.mm\n[空格]或者 是 APP包名 相等 com.tencent.mm\n并且 是 通知内容 包含 欠费\n\n以上规则表示：收到APP通知，并且（APP包名是com.tencent.mm 或者 APP包名是com.tencent.mm），并且 通知内容 包含 欠费 时转发通知\n\n注意：每行开始的空格代表层级，太过复杂的多重规则可能导致内存占用很大！</string>
+    <string name="mu_rule_app_tips">多重匹配规则示例：（语法参见wiki）\n\n并且 是 APP包名 相等 com.tencent.mm\n[空格]或者 是 APP包名 相等 com.tencent.mobileqq\n并且 是 通知内容 包含 欠费\n\n以上规则表示：收到APP通知，并且（APP包名是com.tencent.mm 或者 APP包名是com.tencent.mobileqq），并且 通知内容 包含 欠费 时转发通知\n\n注意：每行开始的空格代表层级，太过复杂的多重规则可能导致内存占用很大！</string>
     <string name="post">POST</string>
     <string name="get">GET</string>
+    <string name="put">PUT</string>
+    <string name="patch">PATCH</string>
     <!--CloneActivity-->
     <string name="local_ip">本机IP：</string>
     <string name="operating_instruction">严正声明：\n该功能仅限个人新旧手机切换使用，用于非法用途后果自负！\n\n操作说明：\n1.新旧手机连接同一个WiFi网络(禁用AP隔离)，如需穿透内网请先配置Frpc\n2.【二选一】旧手机点【推送】按钮，将本机的配置推送到服务端\n3.【二选一】新手机点【拉取】按钮，将拉取服务端的配置到本机\n\n注意事项：\n1.客户端与服务端的APP版本必须一致，才能克隆!\n2.导入成功后，发送通道、转发规则将完全被覆盖，清空历史记录！\n3.主动请求、保活措施、个性设置不在克隆范围</string>
@@ -484,7 +487,8 @@
     <string name="server_chan">Server酱·Turbo版</string>
     <string name="telegram">Telegram机器人</string>
     <string name="sms_menu">手机短信</string>
-    <string name="feishu">飞书机器人</string>
+    <string name="feishu">飞书群机器人</string>
+    <string name="feishu_app">飞书企业应用</string>
     <string name="pushplus">PushPlus</string>
     <string name="gotify">Gotify</string>
     <string name="_0">0</string>
@@ -502,8 +506,11 @@
     <string name="forwarding_function_tips">总开关，请根据实际需要，启用对应的转发功能</string>
     <string name="call_date">通话时间：</string>
     <string name="call_duration">通话时长：</string>
+    <string name="ring_duration">响铃时长：</string>
+    <string name="type">类型：</string>
     <string name="mandatory_type">通话类型：</string>
     <string name="missed_call">未接来电</string>
+    <string name="incoming_call">来电提醒</string>
     <string name="received_call">已接来电</string>
     <string name="local_outgoing_call">本机去电</string>
     <string name="optional_action">可选操作：</string>
@@ -612,7 +619,7 @@
     <string name="toast_granted_part">获取部分权限成功，但部分权限未正常授予，APP部分功能可能受限！</string>
     <string name="toast_denied_never">被永久拒绝授权，前往系统设置手动授予权限？</string>
     <string name="toast_denied">获取必需的权限失败，APP功能可能受限！</string>
-    <string name="tips_first_time">\n&#160;&#160;&#160;&#160;首次使用请按照1234步骤顺序设置，数字点亮表示该步骤已设置(4点亮表示有成功日志)！\n\n&#160;&#160;&#160;&#160;根据以往用户反馈，90%的新用户最终排查结果都是手机权限设置问题，5%的用户是APP保活问题，其他问题排查参考Wiki中的常见问题（APP右上角使用帮助入口）\n\n&#160;&#160;&#160;&#160;强烈建议：手动排查一下系统设置：自启动、电源策略、APP的权限，把所有权限打开（始终允许，不要“使用中允许”，MIUI系统就全部变绿），特别是一些国产定制系统加入隐私保护、验证码保护等（例如：MIUI 系统的 空白通行证）\n\n&#160;&#160;&#160;&#160;请选择是否立即“前往系统设置”检查，或“稍后自行处理”？</string>
+    <string name="tips_first_time" formatted="false">\n&#160;&#160;&#160;&#160;首次使用请按照1234步骤顺序设置，数字点亮表示该步骤已设置(4点亮表示有成功日志)！\n\n&#160;&#160;&#160;&#160;根据以往用户反馈，90%的新用户最终排查结果都是手机权限设置问题，5%的用户是APP保活问题，其他问题排查参考Wiki中的常见问题（APP右上角使用帮助入口）\n\n&#160;&#160;&#160;&#160;强烈建议：手动排查一下系统设置：自启动、电源策略、APP的权限，把所有权限打开（始终允许，不要“使用中允许”，MIUI系统就全部变绿），特别是一些国产定制系统加入隐私保护、验证码保护等（例如：MIUI 系统的 空白通行证）\n\n&#160;&#160;&#160;&#160;请选择是否立即“前往系统设置”检查，或“稍后自行处理”？</string>
     <string name="play_silence_music">后台播放无声音乐</string>
     <string name="play_silence_music_tips">【按需启用】播放无声音乐让后台一直运行，可能比较耗电</string>
     <string name="one_pixel">1像素</string>
@@ -644,7 +651,7 @@
     <string name="no">No</string>
     <string name="unknown">---</string>
     <string name="refresh">刷新</string>
-    <string name="tip_can_not_get_sim_infos">请确认应用权限【获取手机信息】为【始终允许】</string>
+    <string name="tip_can_not_get_sim_infos">请确认应用权限【获取手机信息】为【始终允许】或手动填写</string>
     <string name="tip_can_not_get_sim_info">未获取到卡槽%s中的SIM卡信息</string>
     <string name="add">添加</string>
     <string name="check_update">检查更新</string>
@@ -680,7 +687,7 @@
     <string name="bark_level_active">立即亮屏显示通知</string>
     <string name="bark_level_timeSensitive">时效性通知，可在专注状态下显示通知</string>
     <string name="bark_level_passive">仅添加到通知列表，不会亮屏提醒</string>
-    <string name="bark_url_regex" tools:ignore="TypographyDashes"><![CDATA[^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]]]></string>
+    <string name="bark_url_regex" formatted="false" tools:ignore="TypographyDashes"><![CDATA[^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]]]></string>
     <string name="bark_url_error">Url格式错误</string>
 
     <string name="from_email_hint">填写 @ 前面的用户名</string>
@@ -695,7 +702,7 @@
     <string name="webhook_server">Webhook Server</string>
     <string name="webhook_server_tips">例如：https://a.b.com/msg?token=xyz</string>
     <string name="webhook_params">Params</string>
-    <string name="webhook_params_tips">例如：payload=%7B%22text%22%3A%22[msg]%22%7D [msg]将被替换成短信内容。\n支持Json格式，例如：{\"text\":\"[msg]\"}。\n注意：除JSON格式外，msg会自动进行UTF-8编码</string>
+    <string name="webhook_params_tips" formatted="false">例如：payload=%7B%22text%22%3A%22[msg]%22%7D [msg]将被替换成短信内容。\n支持Json格式，例如：{\"text\":\"[msg]\"}。\n注意：除JSON格式外，msg会自动进行UTF-8编码</string>
     <string name="webhook_secret">Secret：置空则不计算sign</string>
     <string name="headers">Headers</string>
     <string name="header_key">Key</string>
@@ -770,7 +777,7 @@
     <string name="http_server_stopped">HttpServer已停止</string>
     <string name="server_settings">服务端设置</string>
     <string name="server_settings_tips">建议启用签名设置、点击“随机”自动生成并复制到剪贴板</string>
-    <string name="copy">复制</string>
+    <string name="copy" tools:ignore="PrivateResource">复制</string>
     <string name="random">随机生成</string>
     <string name="sign_key">签名密钥</string>
     <string name="sign_key_tips">已生成密钥，并复制到剪贴板</string>
@@ -835,7 +842,7 @@
     <string name="remote_sms">远程发短信：</string>
     <string name="clear">清除</string>
     <string name="storage_permission_tips">未授权储存权限，该功能无法使用！</string>
-    <string name="contact_info">姓名：%s\n号码：%s</string>
+    <string name="contact_info" formatted="false">姓名：%s\n号码：%s</string>
     <string name="card_slot_does_not_match">卡槽未匹配中规则</string>
     <string name="unmatched_rule">未匹配中规则</string>
     <string name="copied_to_clipboard">已复制到剪贴板:\n%s</string>
@@ -860,7 +867,7 @@
     <string name="sign_verify_failed">签名校验失败</string>
     <string name="version_code_required">version_code节点必传</string>
     <string name="inconsistent_version">客户端与服务端的App版本不一致</string>
-    <string name="timestamp_verify_failed">timestamp校验失败，与服务器时间(%s)误差不能超过1小时(diffTime=%s)</string>
+    <string name="timestamp_verify_failed" formatted="false">timestamp校验失败，与服务器时间(%s)误差不能超过1小时(diffTime=%s)</string>
 
     <string name="main_title">主标题</string>
     <string name="subtitle">副标题</string>
@@ -892,14 +899,27 @@
     <string name="sampleMarkdown">Markdown类型</string>
     <string name="ip_hint">可选，主机IP/广播地址，例如：192.168.1.255</string>
     <string name="ip_error">IP地址格式错误，例如：192.168.168.168</string>
-    <string name="ip_regex">^((\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\.){3}(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$</string>
+    <string name="ip_regex" tools:ignore="TypographyDashes">^((\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\.){3}(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$</string>
     <string name="mac_hint">必填，网卡mac，例如：AA:BB:CC:DD:EE:FF</string>
     <string name="mac_error">网卡mac格式错误，例如：AA:BB:CC:DD:EE:FF</string>
-    <string name="mac_regex">^((([a-fA-F0-9]{2}:){5})|(([a-fA-F0-9]{2}-){5}))[a-fA-F0-9]{2}$</string>
+    <string name="mac_regex" tools:ignore="TypographyDashes">^((([a-fA-F0-9]{2}:){5})|(([a-fA-F0-9]{2}-){5}))[a-fA-F0-9]{2}$</string>
     <string name="ip">主机IP/广播地址</string>
     <string name="mac">网卡MAC</string>
     <string name="no_wol_history">暂无历史记录，WOL发送成功后自动加入</string>
     <string name="wol_port_hint">可选，WOL一般透过端口7或端口9进行发送</string>
     <string name="wol_port_error">端口号取值范围：1~65535</string>
-    <string name="wol_port_regex">^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$</string>
+    <string name="wol_port_regex" tools:ignore="TypographyDashes">^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$</string>
+    <string name="select_directory">选择目录</string>
+    <string name="web_client">Web客户端</string>
+    <string name="restarting_httpserver">正在重启HttpServer</string>
+    <string name="download_first">请先下载Web客户端并解压到：\n%s</string>
+    <string name="root_directory">根目录：\n%s</string>
+    <string name="select_web_client_directory">选择Web客户端目录</string>
+    <string name="invalid_feishu_app_parameter">AppId/AppSecret/UserId都不能为空</string>
+    <string name="app_id">App ID</string>
+    <string name="app_secret">App Secret</string>
+    <string name="user_id">User ID</string>
+    <string name="auto_clean_logs">自动删除N天前的转发记录</string>
+    <string name="auto_clean_logs_tips">0=禁用，触发机制：每次电量变化时扫描</string>
+    <string name="day">天</string>
 </resources>

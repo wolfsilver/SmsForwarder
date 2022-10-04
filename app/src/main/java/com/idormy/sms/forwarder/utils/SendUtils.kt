@@ -18,8 +18,6 @@ import com.idormy.sms.forwarder.workers.SendWorker
 import com.idormy.sms.forwarder.workers.UpdateLogsWorker
 import com.xuexiang.xui.utils.ResUtils
 import com.xuexiang.xutil.XUtil
-import com.xuexiang.xutil.data.DateUtils
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -49,7 +47,8 @@ object SendUtils {
         Log.d(TAG, item.logs.toString())
 
         val date: Date = try {
-            DateUtils.string2Date(item.logs.time.toString(), SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()))
+            //DateUtils.string2Date(item.logs.time.toString(), SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()))
+            item.logs.time
         } catch (e: Exception) {
             e.printStackTrace()
             Date()
@@ -122,6 +121,10 @@ object SendUtils {
                 TYPE_DINGTALK_INNER_ROBOT -> {
                     val settingVo = Gson().fromJson(sender.jsonSetting, DingtalkInnerRobotSetting::class.java)
                     DingtalkInnerRobotUtils.sendMsg(settingVo, msgInfo, rule, logId)
+                }
+                TYPE_FEISHU_APP -> {
+                    val settingVo = Gson().fromJson(sender.jsonSetting, FeishuAppSetting::class.java)
+                    FeishuAppUtils.sendMsg(settingVo, msgInfo, rule, logId)
                 }
                 else -> {
                     updateLogs(logId, 0, "未知发送通道")

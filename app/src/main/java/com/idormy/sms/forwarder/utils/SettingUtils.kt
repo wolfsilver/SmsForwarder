@@ -61,6 +61,14 @@ class SettingUtils private constructor() {
                 MMKVUtils.put(SP_ENABLE_CALL_TYPE_3, enableCallType3)
             }
 
+        //是否转发通话——来电提醒
+        @JvmStatic
+        var enableCallType4: Boolean
+            get() = MMKVUtils.getBoolean(SP_ENABLE_CALL_TYPE_4, false)
+            set(enableCallType4) {
+                MMKVUtils.put(SP_ENABLE_CALL_TYPE_4, enableCallType4)
+            }
+
         //是否转发应用通知
         @JvmStatic
         var enableAppNotify: Boolean
@@ -131,6 +139,14 @@ class SettingUtils private constructor() {
             get() = MMKVUtils.getInt(SP_SILENT_PERIOD_END, 0)
             set(silentPeriodEnd) {
                 MMKVUtils.put(SP_SILENT_PERIOD_END, silentPeriodEnd)
+            }
+
+        //自动删除N天前的转发记录
+        @JvmStatic
+        var autoCleanLogsDays: Int
+            get() = MMKVUtils.getInt(SP_AUTO_CLEAN_LOGS_DAYS, 0)
+            set(autoCleanLogsDays) {
+                MMKVUtils.put(SP_AUTO_CLEAN_LOGS_DAYS, autoCleanLogsDays)
             }
 
         //是否监听电池状态变化

@@ -32,6 +32,11 @@ class TelegramUtils private constructor() {
             rule: Rule?,
             logId: Long?,
         ) {
+            if (setting.method == null || setting.method == "POST") {
+                msgInfo.content = htmlEncode(msgInfo.content)
+                msgInfo.simInfo = htmlEncode(msgInfo.simInfo)
+            }
+
             val content: String = if (rule != null) {
                 msgInfo.getContentForSend(rule.smsTemplate, rule.regexReplace)
             } else {
@@ -100,7 +105,7 @@ class TelegramUtils private constructor() {
             }
 
             request.keepJson(true)
-                .ignoreHttpsCert()
+                //.ignoreHttpsCert()
                 .timeOut((SettingUtils.requestTimeout * 1000).toLong()) //超时时间10s
                 .cacheMode(CacheMode.NO_CACHE)
                 .retryCount(SettingUtils.requestRetryTimes) //超时重试的次数
@@ -118,7 +123,7 @@ class TelegramUtils private constructor() {
                         Log.i(TAG, response)
 
                         val resp = Gson().fromJson(response, TelegramResult::class.java)
-                        if (resp.ok == true) {
+                        if (resp?.ok == true) {
                             SendUtils.updateLogs(logId, 2, response)
                         } else {
                             SendUtils.updateLogs(logId, 0, response)
@@ -131,6 +136,24 @@ class TelegramUtils private constructor() {
 
         fun sendMsg(setting: TelegramSetting, msgInfo: MsgInfo) {
             sendMsg(setting, msgInfo, null, null)
+        }
+
+        private fun htmlEncode(source: String?): String {
+            if (source == null) {
+                return ""
+            }
+            val buffer = StringBuffer()
+            for (element in source) {
+                when (element) {
+                    '<' -> buffer.append("&lt;")
+                    '>' -> buffer.append("&gt;")
+                    '&' -> buffer.append("&amp;")
+                    '"' -> buffer.append("&quot;")
+                    //10, 13 -> buffer.append("\n")
+                    else -> buffer.append(element)
+                }
+            }
+            return buffer.toString()
         }
     }
 }

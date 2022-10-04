@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.idormy.sms.forwarder.BuildConfig
 import com.idormy.sms.forwarder.database.dao.FrpcDao
 import com.idormy.sms.forwarder.database.dao.LogsDao
 import com.idormy.sms.forwarder.database.dao.RuleDao
@@ -43,9 +44,13 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context): AppDatabase {
-            return Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, DATABASE_NAME)
+            val builder = Room.databaseBuilder(
+                context.applicationContext,
+                AppDatabase::class.java,
+                DATABASE_NAME
+            )
                 .allowMainThreadQueries() //TODO:允许主线程访问，后面再优化
-                .addCallback(object : RoomDatabase.Callback() {
+                .addCallback(object : Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         //fillInDb(context.applicationContext)
                         db.execSQL(
@@ -56,7 +61,11 @@ server_addr = 88.88.88.88
 #frps服务端公网端口
 server_port = 8888
 #可选，建议启用
-token = 888888888
+token = 88888888
+#连接服务端的超时时间（增大时间避免frpc在网络未就绪的情况下启动失败）
+dial_server_timeout = 60
+#第一次登陆失败后是否退出
+login_fail_exit = false
 
 #[二选一即可]每台机器不可重复，通过 http://88.88.88.88:5000 访问
 [SmsForwarder-TCP]
@@ -89,10 +98,14 @@ custom_domains = smsf.demo.com
                     MIGRATION_8_9,
                     MIGRATION_9_10,
                 )
-                .setQueryCallback({ sqlQuery, bindArgs ->
+
+            if (BuildConfig.DEBUG) {
+                builder.setQueryCallback({ sqlQuery, bindArgs ->
                     println("SQL_QUERY: $sqlQuery\nBIND_ARGS: $bindArgs")
                 }, Executors.newSingleThreadExecutor())
-                .build()
+            }
+
+            return builder.build()
         }
 
         //转发日志添加SIM卡槽信息
@@ -177,7 +190,11 @@ server_addr = 88.88.88.88
 #frps服务端公网端口
 server_port = 8888
 #可选，建议启用
-token = 888888888
+token = 88888888
+#连接服务端的超时时间（增大时间避免frpc在网络未就绪的情况下启动失败）
+dial_server_timeout = 60
+#第一次登陆失败后是否退出
+login_fail_exit = false
 
 #[二选一即可]每台机器不可重复，通过 http://88.88.88.88:5000 访问
 [SmsForwarder-TCP]

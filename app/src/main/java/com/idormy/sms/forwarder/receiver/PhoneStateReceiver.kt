@@ -39,30 +39,13 @@ class PhoneStateReceiver : BroadcastReceiver() {
             if (TelephonyManager.ACTION_PHONE_STATE_CHANGED != intent.action) return
 
             //权限判断
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) return
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.READ_PHONE_STATE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) return
 
             //获取来电号码
-            /*val phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)
-            val state = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                Core.telephonyManager.callStateForSubscription
-            } else {
-                Core.telephonyManager.callState
-            }
-            Log.d(TAG, "来电信息：state=$state phoneNumber = $phoneNumber")
-            if (TextUtils.isEmpty(phoneNumber)) return
-
-            when (state) {
-                TelephonyManager.CALL_STATE_RINGING -> {}
-                TelephonyManager.CALL_STATE_IDLE -> {
-                    *//*(Core.app as App).applicationScope.launch {
-                        delay(500L) //延时0.5秒获取通话记录
-                        sendReceiveCallMsg(context, phoneNumber)
-                    }*//*
-                    sendReceiveCallMsg(context, phoneNumber)
-                }
-                TelephonyManager.CALL_STATE_OFFHOOK -> {}
-            }*/
-
             val number = intent.extras!!.getString(TelephonyManager.EXTRA_INCOMING_NUMBER)
             val stateStr = intent.extras!!.getString(TelephonyManager.EXTRA_STATE)
             var state = 0
@@ -71,6 +54,8 @@ class PhoneStateReceiver : BroadcastReceiver() {
                 TelephonyManager.EXTRA_STATE_OFFHOOK -> state = TelephonyManager.CALL_STATE_OFFHOOK
                 TelephonyManager.EXTRA_STATE_RINGING -> state = TelephonyManager.CALL_STATE_RINGING
             }
+            Log.d(TAG, "state=$state, number=$number")
+
             onCallStateChanged(context, state, number)
 
         } catch (e: Exception) {
@@ -82,17 +67,40 @@ class PhoneStateReceiver : BroadcastReceiver() {
     //Outgoing call-  goes from IDLE to OFFHOOK when it dials out, to IDLE when hung up
     private fun onCallStateChanged(context: Context, state: Int, number: String?) {
         val lastState = MMKVUtils.getInt("CALL_LAST_STATE", TelephonyManager.CALL_STATE_IDLE)
-        if (lastState == state) {
+        if (lastState == state || (state == TelephonyManager.CALL_STATE_RINGING && number == null)) {
             //No change, debounce extras
             return
         }
 
+        MMKVUtils.put("CALL_LAST_STATE", state)
         when (state) {
             TelephonyManager.CALL_STATE_RINGING -> {
                 Log.d(TAG, "来电响铃")
                 MMKVUtils.put("CALL_IS_INCOMING", true)
                 //MMKVUtils.put("CALL_START_TIME", Date())
                 MMKVUtils.put("CALL_SAVED_NUMBER", number)
+
+                //来电提醒
+                if (!TextUtils.isEmpty(number) && SettingUtils.enableCallType4) {
+                    val contacts = PhoneUtils.getContactByNumber(number)
+                    val contactName =
+                        if (contacts.isNotEmpty()) contacts[0].name else getString(R.string.unknown_number)
+
+                    val sb = StringBuilder()
+                    sb.append(getString(R.string.linkman)).append(contactName).append("\n")
+                    sb.append(getString(R.string.mandatory_type))
+                    sb.append(getString(R.string.incoming_call))
+
+                    val msgInfo = MsgInfo("call", number.toString(), sb.toString(), Date(), "", -1)
+                    val request = OneTimeWorkRequestBuilder<SendWorker>()
+                        .setInputData(
+                            workDataOf(
+                                Worker.sendMsgInfo to Gson().toJson(msgInfo)
+                            )
+                        )
+                        .build()
+                    WorkManager.getInstance(context).enqueue(request)
+                }
             }
             TelephonyManager.CALL_STATE_OFFHOOK ->
                 //Transition of ringing->offhook are pickups of incoming calls.  Nothing done on them
@@ -113,19 +121,30 @@ class PhoneStateReceiver : BroadcastReceiver() {
                 when {
                     lastState == TelephonyManager.CALL_STATE_RINGING -> {
                         Log.d(TAG, "来电未接")
-                        sendReceiveCallMsg(context, 3, MMKVUtils.getString("CALL_SAVED_NUMBER", null))
+                        sendReceiveCallMsg(
+                            context,
+                            3,
+                            MMKVUtils.getString("CALL_SAVED_NUMBER", null)
+                        )
                     }
                     MMKVUtils.getBoolean("CALL_IS_INCOMING", false) -> {
                         Log.d(TAG, "来电挂机")
-                        sendReceiveCallMsg(context, 1, MMKVUtils.getString("CALL_SAVED_NUMBER", null))
+                        sendReceiveCallMsg(
+                            context,
+                            1,
+                            MMKVUtils.getString("CALL_SAVED_NUMBER", null)
+                        )
                     }
                     else -> {
                         Log.d(TAG, "去电挂机")
-                        sendReceiveCallMsg(context, 2, MMKVUtils.getString("CALL_SAVED_NUMBER", null))
+                        sendReceiveCallMsg(
+                            context,
+                            2,
+                            MMKVUtils.getString("CALL_SAVED_NUMBER", null)
+                        )
                     }
                 }
         }
-        MMKVUtils.put("CALL_LAST_STATE", state)
     }
 
     private fun sendReceiveCallMsg(context: Context, callType: Int, phoneNumber: String?) {
@@ -158,10 +177,18 @@ class PhoneStateReceiver : BroadcastReceiver() {
         //获取联系人姓名
         if (TextUtils.isEmpty(callInfo.name)) {
             val contacts = PhoneUtils.getContactByNumber(phoneNumber)
-            callInfo.name = if (contacts.isNotEmpty()) contacts[0].name else getString(R.string.unknown_number)
+            callInfo.name =
+                if (contacts.isNotEmpty()) contacts[0].name else getString(R.string.unknown_number)
         }
 
-        val msgInfo = MsgInfo("call", callInfo.number, PhoneUtils.getCallMsg(callInfo), Date(), simInfo, simSlot)
+        val msgInfo = MsgInfo(
+            "call",
+            callInfo.number,
+            PhoneUtils.getCallMsg(callInfo),
+            Date(),
+            simInfo,
+            simSlot
+        )
         val request = OneTimeWorkRequestBuilder<SendWorker>()
             .setInputData(
                 workDataOf(

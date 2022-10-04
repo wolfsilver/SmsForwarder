@@ -229,6 +229,7 @@
     <string name="test_phone_number">Test Phone Number</string>
     <string name="test_msg_content">Test Msg Content</string>
     <string name="test_package_name">Test PackageName</string>
+    <string name="test_inform_title">Test Notify Title</string>
     <string name="test_inform_content">Test Notify Content</string>
     <string name="match_sim_slot">SIM Slot</string>
     <string name="match_field">Field</string>
@@ -336,7 +337,7 @@
     <string name="SmsSimSlot">SIM Slot</string>
     <string name="same_source">Same source</string>
     <string name="SmsMobiles">Receive Mobile Phone Numbers</string>
-    <string name="SmsMobilesTips">Separated by ; , e.g. 15888888888;19999999999</string>
+    <string name="SmsMobilesTips">Tips:\n1.Separated by ; , e.g. 15888888888;19999999999\n2.Allow to insert `{{FROM}}` tag to realize SMS auto-reply (SMS/Call scenario)</string>
     <string name="OnlyNoNetwork">Enable only when no network</string>
     <!--SettingActivity-->
     <string name="notify_content">Notify Content</string>
@@ -391,9 +392,11 @@
     <string name="sim1" tools:ignore="Typos">SIM1</string>
     <string name="sim2" tools:ignore="Typos">SIM2</string>
     <string name="mu_rule_sms_tips">Example of multiple matching rules: (see wiki for syntax)\n\nAND IS PHONE_NUM EQUALS 10086\n[space]OR IS PHONE_NUM EQUALS 10011\nAND IS MSG_CONTENT CONTAIN arrears\n\nThe above rule means: receive a text message, and (the mobile phone number is 10086 or the mobile phone number is 10010), and the content of the text message includes arrears When forwarding the text message\n\nNote: The space at the beginning of each line represents the level, too complex multiple rules may lead to a large memory usage!</string>
-    <string name="mu_rule_app_tips">Example of multiple matching rules: (see wiki for syntax)\n\nAND IS PACKAGE_NAME EQUALS com.tencent.mm\n[space]OR IS PACKAGE_NAME EQUALS com.tencent.mm\nAND IS INFORM_CONTENT CONTAIN arrears\n\nThe above rules mean: Receive an APP notification, and (the APP package name is com.tencent.mm or the APP package name is com.tencent.mm), and the content of the notification includes forwarding the notification when the payment is in arrears\n\nNote: The space at the beginning of each line represents the level, too complex multiple rules may lead to a large memory usage!</string>
+    <string name="mu_rule_app_tips">Example of multiple matching rules: (see wiki for syntax)\n\nAND IS PACKAGE_NAME EQUALS com.tencent.mm\n[space]OR IS PACKAGE_NAME EQUALS com.tencent.mobileqq\nAND IS INFORM_CONTENT CONTAIN arrears\n\nThe above rules mean: Receive an APP notification, and (the APP package name is com.tencent.mm or the APP package name is com.tencent.mobileqq), and the content of the notification includes forwarding the notification when the payment is in arrears\n\nNote: The space at the beginning of each line represents the level, too complex multiple rules may lead to a large memory usage!</string>
     <string name="post">POST</string>
     <string name="get">GET</string>
+    <string name="put">PUT</string>
+    <string name="patch">PATCH</string>
     <!--CloneActivity-->
     <string name="local_ip">Local IP: </string>
     <string name="operating_instruction">Instructions: \n[Note] The APP version of the sender and receiver must be the same!\n1. Please keep the SOURCE and DESTINATION phones in the same Wi-Fi network, and do not turn on isolation. \n2. Tap "Send" on SOURCE mobile phone, and get "server IP" \n3. After filling in "Server IP" on DESTINATION phone, tap "Receive". \n [NOTE:] sender(s), forwarding rule(s) and log(s) will be overwritten after cloning!</string> <!-- 原文是“新旧手机”，英文翻译中处理为“源”手机和“目标”手机，因为担心“新旧”的表述引起混淆（有没一种可能就是用户就是用从新手机的设备复制到旧手机上去呢？）。 -->
@@ -484,6 +487,7 @@
     <string name="telegram">Telegram Bot</string>
     <string name="sms_menu">SMS</string>
     <string name="feishu">FeiShu Bot</string>
+    <string name="feishu_app">FeiShu App</string>
     <string name="pushplus">PushPlus</string>
     <string name="gotify">Gotify</string>
     <string name="_0">0</string>
@@ -501,8 +505,11 @@
     <string name="forwarding_function_tips">Main switch: Enable the forwarding function as required</string>
     <string name="call_date">Call date: </string>
     <string name="call_duration">Call duration: </string>
+    <string name="ring_duration">Ring duration: </string>
+    <string name="type">Type: </string>
     <string name="mandatory_type">Call type: </string>
     <string name="missed_call">Missed</string>
+    <string name="incoming_call">Incoming</string>
     <string name="received_call">Received</string>
     <string name="local_outgoing_call">Call out</string>
     <string name="optional_action">Optional: </string>
@@ -611,7 +618,7 @@
     <string name="toast_granted_part">Some permissions are successfully obtained, but some permissions are not granted normally, and some functions of the APP may be limited!</string>
     <string name="toast_denied_never">Permanently denied authorization, go to system settings to manually grant permissions?</string>
     <string name="toast_denied">Failed to obtain necessary permissions, APP function may be limited!</string>
-    <string name="tips_first_time">\n&#160;&#160;&#160;&#160;首次使用请按照1234步骤顺序设置，数字点亮表示该步骤已设置(4点亮表示有成功日志)！\n\n&#160;&#160;&#160;&#160;根据以往用户反馈，90%的新用户最终排查结果都是手机权限设置问题，5%的用户是APP保活问题，其他问题排查参考Wiki中的常见问题（APP右上角使用帮助入口）\n\n&#160;&#160;&#160;&#160;强烈建议: 手动排查一下系统设置: 自启动、电源策略、APP的权限，把所有权限打开（始终允许，不要“使用中允许”，MIUI系统就全部变绿），特别是一些国产定制系统加入隐私保护、验证码保护等（例如: MIUI 系统的 空白通行证）\n\n&#160;&#160;&#160;&#160;请选择是否立即“前往系统设置”检查，或“稍后自行处理”？</string>
+    <string name="tips_first_time" formatted="false">\n&#160;&#160;&#160;&#160;首次使用请按照1234步骤顺序设置，数字点亮表示该步骤已设置(4点亮表示有成功日志)！\n\n&#160;&#160;&#160;&#160;根据以往用户反馈，90%的新用户最终排查结果都是手机权限设置问题，5%的用户是APP保活问题，其他问题排查参考Wiki中的常见问题（APP右上角使用帮助入口）\n\n&#160;&#160;&#160;&#160;强烈建议: 手动排查一下系统设置: 自启动、电源策略、APP的权限，把所有权限打开（始终允许，不要“使用中允许”，MIUI系统就全部变绿），特别是一些国产定制系统加入隐私保护、验证码保护等（例如: MIUI 系统的 空白通行证）\n\n&#160;&#160;&#160;&#160;请选择是否立即“前往系统设置”检查，或“稍后自行处理”？</string>
     <string name="play_silence_music">Play Silent Music</string>
     <string name="play_silence_music_tips">Play silent music to keep running in the background, which may consume more power, enable it on demand</string>
     <string name="one_pixel">One Pixel</string>
@@ -679,7 +686,7 @@
     <string name="bark_level_active">Immediately display notifications</string>
     <string name="bark_level_timeSensitive">Time-sensitive notifications that can be displayed in a focused state</string>
     <string name="bark_level_passive">Only added to the notification list, no screen reminder</string>
-    <string name="bark_url_regex" tools:ignore="TypographyDashes"><![CDATA[^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]]]></string>
+    <string name="bark_url_regex" formatted="false" tools:ignore="TypographyDashes"><![CDATA[^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]]]></string>
     <string name="bark_url_error">Url format error</string>
 
     <string name="from_email_hint">Fill in the username before @</string>
@@ -694,7 +701,7 @@
     <string name="webhook_server">Webhook Server</string>
     <string name="webhook_server_tips">For example: https://a.b.com/msg?token=xyz</string>
     <string name="webhook_params">Params</string>
-    <string name="webhook_params_tips">For example: payload=%7B%22text%22%3A%22[msg]%22%7D [msg] will be replaced with SMS content.\nJson format is supported, for example: {\"text\":\"[msg]\"}.\nNote: msg is automatically UTF-8 encoded except in JSON format</string>
+    <string name="webhook_params_tips" formatted="false">For example: payload=%7B%22text%22%3A%22[msg]%22%7D [msg] will be replaced with SMS content.\nJson format is supported, for example: {\"text\":\"[msg]\"}.\nNote: msg is automatically UTF-8 encoded except in JSON format</string>
     <string name="webhook_secret">Secret: If it is empty, the sign will not be calculated</string>
     <string name="headers">Headers</string>
     <string name="header_key">Key</string>
@@ -708,7 +715,7 @@
     <string name="choose_sender">Drop-down selection, keyword fuzzy match</string>
     <string name="choose_app">Installed apps</string>
     <string name="choose_app_hint">Drop-down selection to get package name, keyword fuzzy matching APP name</string>
-    <string name="regex_multi_match" tools:ignore="TypographyDashes">^\\s*(AND|OR)\\s(IS|NOTIS)\\s(PHONE_NUM|PACKAGE_NAME|MSG_CONTENT|INFORM_CONTENT|INFORM_TITLE|CARD_SLOT)\\\\s(EQUALS|CONTAIN|NOTCONTAIN|STARTWITH|ENDWITH|REGEX)\\s(.*)$</string>
+    <string name="regex_multi_match" tools:ignore="TypographyDashes">^\\s*(AND|OR)\\s(IS|NOTIS)\\s(PHONE_NUM|PACKAGE_NAME|MSG_CONTENT|INFORM_CONTENT|INFORM_TITLE|CARD_SLOT)\\s(EQUALS|CONTAIN|NOTCONTAIN|STARTWITH|ENDWITH|REGEX)\\s(.*)$</string>
     <string name="privacy_content_1">Welcome to</string>
     <string name="privacy_content_2">We understand the importance of personal information to you and thank you for your trust in us.\n</string>
     <string name="privacy_content_3">In order to better protect your rights and comply with relevant regulatory requirements, we will pass "</string>
@@ -834,7 +841,7 @@
     <string name="remote_sms">Remote SMS：</string>
     <string name="clear">Clear</string>
     <string name="storage_permission_tips">Unauthorized storage permission, this function cannot be used!</string>
-    <string name="contact_info">Name：%s\nPhone：%s</string>
+    <string name="contact_info" formatted="false">Name：%s\nPhone：%s</string>
     <string name="card_slot_does_not_match">Card slot does not match the rule</string>
     <string name="unmatched_rule">Unmatched rule</string>
     <string name="copied_to_clipboard">Copied to clipboard:\n%s</string>
@@ -859,7 +866,7 @@
     <string name="sign_verify_failed">Sign verify failed</string>
     <string name="version_code_required">version_code required</string>
     <string name="inconsistent_version">The app versions of the client and server are inconsistent</string>
-    <string name="timestamp_verify_failed">The timestamp verification failed, and the difference with the server time (%s) cannot exceed 1 hour (diffTime=%s)</string>
+    <string name="timestamp_verify_failed" formatted="false">The timestamp verification failed, and the difference with the server time (%s) cannot exceed 1 hour (diffTime=%s)</string>
 
     <string name="main_title">Main title</string>
     <string name="subtitle">Subtitle</string>
@@ -891,14 +898,27 @@
     <string name="sampleMarkdown">Markdown</string>
     <string name="ip_hint">IP address/broadcast address, eg. 192.168.1.255</string>
     <string name="ip_error">Malformed IP address, eg. 192.168.168.168</string>
-    <string name="ip_regex">^((\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\.){3}(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$</string>
+    <string name="ip_regex" tools:ignore="TypographyDashes">^((\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\.){3}(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$</string>
     <string name="mac_hint">Network card mac, eg. AA:BB:CC:DD:EE:FF</string>
     <string name="mac_error">The network card mac format is incorrect, eg. AA:BB:CC:DD:EE:FF</string>
-    <string name="mac_regex">^((([a-fA-F0-9]{2}:){5})|(([a-fA-F0-9]{2}-){5}))[a-fA-F0-9]{2}$</string>
+    <string name="mac_regex" tools:ignore="TypographyDashes">^((([a-fA-F0-9]{2}:){5})|(([a-fA-F0-9]{2}-){5}))[a-fA-F0-9]{2}$</string>
     <string name="ip">IP</string>
     <string name="mac">MAC</string>
     <string name="no_wol_history">There is no history record, WOL will be added automatically after successful sending</string>
     <string name="wol_port_hint">WOL is generally sent over port 7 or port 9</string>
     <string name="wol_port_error">Port number value range: 1~65535</string>
-    <string name="wol_port_regex">^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$</string>
+    <string name="wol_port_regex" tools:ignore="TypographyDashes">^([0-9]|[1-9]\\d|[1-9]\\d{2}|[1-9]\\d{3}|[1-5]\\d{4}|6[0-4]\\d{3}|65[0-4]\\d{2}|655[0-2]\\d|6553[0-5])$</string>
+    <string name="select_directory">Select Dir</string>
+    <string name="web_client">Web Client</string>
+    <string name="restarting_httpserver">Restarting HttpServer</string>
+    <string name="download_first">Download and unzip to:\n%s</string>
+    <string name="root_directory">Root Directory:\n%s</string>
+    <string name="select_web_client_directory">Select WebClient Directory</string>
+    <string name="invalid_feishu_app_parameter">AppId/AppSecret/UserId cannot be empty</string>
+    <string name="app_id">App ID</string>
+    <string name="app_secret">App Secret</string>
+    <string name="user_id">User ID</string>
+    <string name="auto_clean_logs">Auto delete logs N days ago</string>
+    <string name="auto_clean_logs_tips">0=disabled, scan when battery change</string>
+    <string name="day">天</string>
 </resources>
